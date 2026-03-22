@@ -1,3 +1,12 @@
+@font-face {
+  font-family: "Martina scriptC";
+  src: url("./assets/Martina_scriptC/Martina-scriptC.woff2") format("woff2"),
+    url("./assets/Martina_scriptC/Martina-scriptC.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --canvas-width: 1280px;
   --page-bg: #ffffff;
