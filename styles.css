@@ -193,6 +193,7 @@ h2 {
   color: transparent;
   -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .hero__title-short {
@@ -440,6 +441,14 @@ h2 {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+@supports (-webkit-touch-callout: none) {
+  .hero__title-full {
+    background-image: none;
+    color: var(--gold);
+    -webkit-text-fill-color: var(--gold);
+  }
 }
 
 .section-text,
