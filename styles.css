@@ -185,6 +185,7 @@ h2 {
 }
 
 .hero__title-full {
+  background-color: var(--gold);
   background-image: var(--hero-title-fill);
   background-position: left top;
   background-repeat: repeat;
@@ -424,6 +425,7 @@ h2 {
 
 .texture-title {
   width: 100%;
+  background-color: var(--gold);
   background-image: var(--title-texture);
   background-position: left top;
   background-repeat: repeat;
