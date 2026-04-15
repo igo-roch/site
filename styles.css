@@ -443,14 +443,6 @@ h2 {
   -webkit-text-fill-color: transparent;
 }
 
-@supports (-webkit-touch-callout: none) {
-  .hero__title-full {
-    background-image: none;
-    color: var(--gold);
-    -webkit-text-fill-color: var(--gold);
-  }
-}
-
 .section-text,
 .section-lead,
 .timeline__text {
