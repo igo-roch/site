@@ -1,0 +1,84 @@
+@font-face {
+    font-family: 'Aire Light Italic Pro';
+    src: url('AireLightItalicPro.eot');
+    src: local('Aire Light Italic Pro'), local('AireLightItalicPro'),
+        url('AireLightItalicPro.eot?#iefix') format('embedded-opentype'),
+        url('AireLightItalicPro.woff2') format('woff2'),
+        url('AireLightItalicPro.woff') format('woff'),
+        url('AireLightItalicPro.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Aire Bold Italic Pro';
+    src: url('AireBoldItalicPro.eot');
+    src: local('Aire Bold Italic Pro'), local('AireBoldItalicPro'),
+        url('AireBoldItalicPro.eot?#iefix') format('embedded-opentype'),
+        url('AireBoldItalicPro.woff2') format('woff2'),
+        url('AireBoldItalicPro.woff') format('woff'),
+        url('AireBoldItalicPro.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Aire Bold Pro';
+    src: url('AireBoldPro.eot');
+    src: local('Aire Bold Pro'), local('AireBoldPro'),
+        url('AireBoldPro.eot?#iefix') format('embedded-opentype'),
+        url('AireBoldPro.woff2') format('woff2'),
+        url('AireBoldPro.woff') format('woff'),
+        url('AireBoldPro.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Aire Fleurons Pro';
+    src: url('AireFleuronsPro.eot');
+    src: local('Aire Fleurons Pro'), local('AireFleuronsPro'),
+        url('AireFleuronsPro.eot?#iefix') format('embedded-opentype'),
+        url('AireFleuronsPro.woff2') format('woff2'),
+        url('AireFleuronsPro.woff') format('woff'),
+        url('AireFleuronsPro.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Aire Roman Italic Pro';
+    src: url('AireRomanItalicPro.eot');
+    src: local('Aire Roman Italic Pro'), local('AireRomanItalicPro'),
+        url('AireRomanItalicPro.eot?#iefix') format('embedded-opentype'),
+        url('AireRomanItalicPro.woff2') format('woff2'),
+        url('AireRomanItalicPro.woff') format('woff'),
+        url('AireRomanItalicPro.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Aire Light Pro';
+    src: url('AireLightPro.eot');
+    src: local('Aire Light Pro'), local('AireLightPro'),
+        url('AireLightPro.eot?#iefix') format('embedded-opentype'),
+        url('AireLightPro.woff2') format('woff2'),
+        url('AireLightPro.woff') format('woff'),
+        url('AireLightPro.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Aire Roman Pro';
+    src: url('AireRomanPro.eot');
+    src: local('Aire Roman Pro'), local('AireRomanPro'),
+        url('AireRomanPro.eot?#iefix') format('embedded-opentype'),
+        url('AireRomanPro.woff2') format('woff2'),
+        url('AireRomanPro.woff') format('woff'),
+        url('AireRomanPro.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
