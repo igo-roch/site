@@ -22,6 +22,10 @@
         <div class="site__blur-top-bg"></div>
       </div>
 
+      <div class="site__blur-bottom" aria-hidden="true">
+        <div class="site__blur-bottom-bg"></div>
+      </div>
+
       <section class="hero" id="home" aria-label="Главный экран">
         <div class="hero__blur" aria-hidden="true">
           <div class="hero__blur-bg"></div>
@@ -179,6 +183,7 @@
     <script>
       const hero = document.querySelector(".hero");
       const siteBlurTop = document.querySelector(".site__blur-top");
+      const siteBlurBottom = document.querySelector(".site__blur-bottom");
       const heroBlur = document.querySelector(".hero__blur");
       const heroNav = document.querySelector(".hero__nav");
       const heroTitle = document.querySelector(".hero__title");
@@ -223,6 +228,8 @@
       let lastSiteHeaderOpacity = null;
       let displayedSiteHeaderOpacity = 0;
       let targetSiteHeaderOpacity = 0;
+      let selectedDayCopyPositioned = false;
+      let lastDatePanX = null;
 
       const updateSiteScale = () => {
         if (!site) {
@@ -244,9 +251,11 @@
 
         if (window.innerWidth >= 800) {
           dateSection.style.removeProperty("--date-image-pan-x");
+          lastDatePanX = null;
           if (selectedDayCopy) {
             selectedDayCopy.removeAttribute("style");
           }
+          selectedDayCopyPositioned = false;
           return;
         }
 
@@ -255,19 +264,25 @@
         const visibleWidth = dateSection.clientWidth || Math.min(window.innerWidth, 390);
         const maxOffset = Math.max(imageWidth - visibleWidth, 0);
         const progress = Math.min(Math.max((viewportHeight - rect.top) / (viewportHeight + rect.height), 0), 1);
+        const datePanX = -maxOffset * progress;
 
-        dateSection.style.setProperty("--date-image-pan-x", `${-maxOffset * progress}px`);
+        if (datePanX !== lastDatePanX) {
+          dateSection.style.setProperty("--date-image-pan-x", `${datePanX}px`);
+          lastDatePanX = datePanX;
+        }
 
-        if (dateCard && selectedDayPicture && selectedDayCopy) {
+        if (!selectedDayCopyPositioned && dateCard && selectedDayPicture && selectedDayCopy) {
           const sourceRect = selectedDayPicture.getBoundingClientRect();
           const cardRect = dateCard.getBoundingClientRect();
           selectedDayCopy.style.left = `${sourceRect.left - cardRect.left + sourceRect.width / 2}px`;
           selectedDayCopy.style.top = `${sourceRect.top - cardRect.top + sourceRect.height / 2}px`;
+          selectedDayCopyPositioned = true;
         }
       };
 
       const updateHeroMetrics = () => {
         viewportHeight = window.innerHeight;
+        root.style.setProperty("--viewport-height", `${viewportHeight}px`);
         const isMobileWidth = window.innerWidth < 800;
         const isTabletWidth = window.innerWidth < 1200;
         maxTitleSize = isMobileWidth ? 40 : isTabletWidth ? 60 : 100;
@@ -275,7 +290,7 @@
         maxNavSize = 16;
         maxHeroPaddingTop = 40;
         maxHeroPaddingBottom = 40;
-        dateHeight = isMobileWidth ? 28 : 43;
+        dateHeight = isMobileWidth ? 28 : 45;
         shrinkDistance = Math.max(viewportHeight - minHeroHeight, 0);
         root.style.setProperty("--hero-flow-offset", `${viewportHeight}px`);
       };
@@ -319,6 +334,10 @@
 
           if (siteBlurTop) {
             siteBlurTop.removeAttribute("style");
+          }
+
+          if (siteBlurBottom) {
+            siteBlurBottom.removeAttribute("style");
           }
 
           if (heroTopCompensation) {
@@ -372,6 +391,11 @@
         if (heroHeight !== lastHeroHeight) {
           hero.style.height = `${heroHeight}px`;
           hero.style.zIndex = "1";
+          if (siteBlurBottom) {
+            const heroShrinkY = viewportHeight - heroHeight;
+            siteBlurBottom.style.height = `${heroHeight}px`;
+            siteBlurBottom.style.setProperty("--hero-shrink-y", `${heroShrinkY}px`);
+          }
           lastHeroHeight = heroHeight;
         }
 
@@ -461,7 +485,12 @@
 
       const requestHeroFrame = () => {
         if (window.innerWidth < 800) {
-          requestAnimationFrame(renderHeroState);
+          if (animationFrame === null) {
+            animationFrame = requestAnimationFrame(() => {
+              animationFrame = null;
+              renderHeroState();
+            });
+          }
           return;
         }
 
@@ -474,6 +503,8 @@
       window.addEventListener("resize", () => {
         updateSiteScale();
         updateHeroMetrics();
+        selectedDayCopyPositioned = false;
+        lastDatePanX = null;
         updateMobileDatePan();
         requestHeroFrame();
       });

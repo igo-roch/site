@@ -43,6 +43,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Felidae";
+  src: url("./assets/Felidae.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --page-bg: #efede7;
   --cream-bg: #efede6;
@@ -56,10 +64,12 @@
   --green: #61714b;
   --font-display: "Martina scriptC", "Cormorant Garamond", "Times New Roman", serif;
   --font-title: "Aire Pro", "Cormorant Garamond", "Times New Roman", serif;
+  --font-date: "Felidae", "Aire Pro", "Cormorant Garamond", "Times New Roman", serif;
   --font-body: "Inter", "Segoe UI", Arial, sans-serif;
   --title-texture: url("./assets/figma/title-texture.png");
   --hero-title-fill: url("./assets/figma/hero-title-fill.png");
   --hero-title-mask: url("./assets/figma/hero-title-mask.svg");
+  --viewport-height: 100vh;
   --hero-flow-offset: 100vh;
   --padding-horizontal: 100px;
   --padding-vertical: 120px;
@@ -67,6 +77,7 @@
   --title-font-size: 80px;
   --title2-font-size: 64px;
   --inter-font-size: 20px;
+  --date-font-size: 32px;
   --gap-content: 60px;
   --gap-title: 20px;
   --gap-gallery: 120px;
@@ -131,16 +142,18 @@ h2 {
 
 .hero {
   position: fixed;
-  z-index: 1;
+  z-index: 3;
   inset: 0 0 auto;
   width: 100%;
-  height: 100vh;
+  height: var(--viewport-height);
+  max-height: var(--viewport-height);
   min-height: 50px;
   padding: 40px var(--padding-horizontal);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  overflow: hidden;
   transform: translateZ(0);
   will-change: height, padding, opacity;
 }
@@ -193,11 +206,15 @@ h2 {
 .hero__blur {
   position: absolute;
   z-index: 1;
+  display: none;
   left: 0;
   right: 0;
   bottom: 0;
+  width: 100%;
   height: 16.944vh;
   min-height: 122px;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
   will-change: transform, opacity;
 }
@@ -205,12 +222,12 @@ h2 {
 .hero__blur-bg {
   position: absolute;
   left: 50%;
-  top: -30px;
-  width: max(2400px, 125vw);
-  height: max(1358px, 125.741vh);
+  top: -60px;
+  width: 1000px;
+  height: 800px;
   background: var(--page-bg);
   filter: blur(125px);
-  transform: translateX(-50%) translateZ(0);
+  transform: translateX(calc(-50% - 305px)) translateZ(0);
   will-change: transform;
 }
 
@@ -218,11 +235,36 @@ h2 {
   display: none;
 }
 
+.site__blur-bottom {
+  position: fixed;
+  z-index: 1;
+  display: block;
+  left: 0;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: var(--viewport-height);
+  overflow: hidden;
+  pointer-events: none;
+  transform: translateY(0);
+}
+
 .site__blur-top-bg {
   position: absolute;
   left: 50%;
   background: var(--page-bg);
   transform: translateX(-50%);
+}
+
+.site__blur-bottom-bg {
+  position: absolute;
+  left: 50%;
+  top: calc(867px - var(--hero-shrink-y, 0px));
+  width: 2400px;
+  height: 800px;
+  background: var(--page-bg);
+  filter: blur(125px);
+  transform: translateX(-50%) translateZ(0);
 }
 
 .hero__nav {
@@ -252,16 +294,18 @@ h2 {
   position: relative;
   z-index: 2;
   width: 100%;
-  max-height: 43px;
+  max-height: calc(var(--date-font-size) * 1.4);
   overflow: hidden;
   flex-shrink: 0;
   color: var(--gold);
-  font-family: var(--font-title);
-  font-size: 31px;
-  font-weight: 700;
+  font-family: var(--font-date);
+  font-size: var(--date-font-size);
+  font-weight: 400;
   line-height: 1.4;
-  letter-spacing: 1.86px;
+  letter-spacing: calc(var(--date-font-size) * 0.1);
   text-align: center;
+  -webkit-text-stroke-width: 0.4px;
+  -webkit-text-stroke-color: var(--gold);
   will-change: opacity, max-height;
 }
 
@@ -352,7 +396,7 @@ h2 {
 
 .section-panel {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   padding: var(--padding-vertical) var(--padding-horizontal);
   display: flex;
   flex-direction: column;
@@ -464,7 +508,7 @@ h2 {
 
 .date-section {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   height: max(760px, 100vh);
   margin-top: -120px;
   background: transparent;
@@ -507,7 +551,7 @@ h2 {
   max-width: none;
   transform: translateX(-50%);
   object-fit: cover;
-  will-change: top;
+  will-change: transform;
 }
 
 .date-card__overlay {
@@ -745,6 +789,7 @@ h2 {
     --title-font-size: 60px;
     --title2-font-size: 56px;
     --inter-font-size: 16px;
+    --date-font-size: 32px;
     --gap-gallery: clamp(13px, calc(13px + (100vw - 800px) * 0.117794), 60px);
   }
 
@@ -765,8 +810,8 @@ h2 {
   }
 
   .hero__blur-bg {
-    width: 3876px;
-    height: 1358px;
+    width: 1000px;
+    height: 800px;
   }
 
   .hero__nav {
@@ -906,6 +951,7 @@ h2 {
     --title-font-size: 40px;
     --title2-font-size: clamp(32px, calc(32px + (100vw - 390px) * 0.01956), 40px);
     --inter-font-size: 14px;
+    --date-font-size: 20px;
     --gap-content: clamp(32px, calc(32px + (100vw - 390px) * 0.01956), 40px);
     --gap-title: 16px;
     --gap-gallery: clamp(8px, calc(8px + (100vw - 390px) * 0.012225), 13px);
@@ -926,6 +972,7 @@ h2 {
   .hero__nav,
   .hero__date,
   .site__blur-top,
+  .site__blur-bottom,
   .hero__blur,
   .site__video {
     transition: none;
@@ -940,7 +987,8 @@ h2 {
   .hero {
     position: fixed;
     inset: 0 0 auto;
-    height: 100svh;
+    height: var(--viewport-height);
+    max-height: var(--viewport-height);
     min-height: 0;
     padding: 40px var(--padding-horizontal);
     opacity: 1;
@@ -981,8 +1029,28 @@ h2 {
     transform: translateX(-50%);
   }
 
-  .hero__blur {
+  .site__blur-bottom {
+    position: absolute;
+    z-index: 1;
     display: block;
+    left: 0;
+    right: 0;
+    top: calc((var(--viewport-height) - 600px) / 2);
+    width: 100%;
+    height: 183px;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .site__blur-bottom-bg {
+    top: 471px;
+    width: 1000px;
+    height: 800px;
+    filter: blur(62.5px);
+  }
+
+  .hero__blur {
+    display: none;
     height: 183px;
     min-height: 183px;
     opacity: 1;
@@ -990,9 +1058,8 @@ h2 {
   }
 
   .hero__blur-bg {
-    top: -68px;
-    width: 1200px;
-    height: 1358px;
+    width: 1000px;
+    height: 800px;
     filter: blur(125px);
   }
 
@@ -1026,9 +1093,7 @@ h2 {
   }
 
   .hero__date {
-    max-height: 28px;
-    font-size: 20px;
-    letter-spacing: 1.2px;
+    max-height: calc(var(--date-font-size) * 1.4);
   }
 
   .date-section {
@@ -1048,10 +1113,10 @@ h2 {
 
   .date-card__bg,
   .date-card__overlay {
-    left: var(--date-image-pan-x, 0px);
+    left: 0;
     width: 990.852px;
     height: 553px;
-    transform: none;
+    transform: translate3d(var(--date-image-pan-x, 0px), 0, 0);
   }
 
   .date-info {
