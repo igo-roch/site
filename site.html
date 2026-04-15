@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Игорь и Мария</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="site">
+      <video
+        class="site__video"
+        src="./assets/video.mp4"
+        autoplay
+        muted
+        loop
+        playsinline
+        aria-hidden="true"
+      ></video>
+
+      <div class="site__blur-top" aria-hidden="true">
+        <div class="site__blur-top-bg"></div>
+      </div>
+
+      <section class="hero" id="home" aria-label="Главный экран">
+        <div class="hero__blur" aria-hidden="true">
+          <div class="hero__blur-bg"></div>
+        </div>
+
+        <div class="hero__top-compensation" aria-hidden="true"></div>
+
+        <nav class="hero__nav" aria-label="Навигация">
+          <a href="#story">О нас</a>
+          <a href="#date">Дата</a>
+          <a href="#schedule">План дня</a>
+          <a href="#dress-code">Дресс-код</a>
+        </nav>
+
+        <h1 class="hero__title" aria-label="Игорь и Мария">
+          <span class="hero__title-full">Игорь &amp; Мария</span>
+          <span class="hero__title-short" aria-hidden="true">И&amp;М</span>
+        </h1>
+        <p class="hero__date">19.06.2026</p>
+      </section>
+
+      <header class="site-header" aria-label="Навигация">
+        <div class="site-header__group site-header__group--left">
+          <a href="#story">О нас</a>
+          <a href="#date">Дата</a>
+        </div>
+        <a class="site-header__brand" href="#home" aria-label="Игорь и Мария">
+          <img src="./assets/figma/header-logo.svg" alt="" aria-hidden="true" />
+        </a>
+        <div class="site-header__group site-header__group--right">
+          <a href="#schedule">План дня</a>
+          <a href="#dress-code">Дресс-код</a>
+        </div>
+      </header>
+
+      <section class="story section-panel" id="story">
+        <div class="section-copy">
+          <h1 class="texture-title">История любви</h1>
+          <div class="section-text">
+            <p>
+              Они не планировали встретиться, но силы свыше распорядились иначе - их случайная
+              встреча стала судьбоносной.
+            </p>
+            <p>
+              Он - истинный романтик, она - горящая натура. Может показаться, что их характеры так
+              же далеки друг от друга, как Очер и Пермь, но именно эти различия делают их союз
+              таким особенным и гармоничным.
+            </p>
+          </div>
+        </div>
+
+        <div class="story-gallery" aria-label="Фотографии пары">
+          <img class="story-gallery__left" src="./assets/figma/story-left.jpg" alt="" />
+          <img class="story-gallery__main" src="./assets/figma/story-main.jpg" alt="" />
+          <img class="story-gallery__right" src="./assets/figma/story-right.jpg" alt="" />
+        </div>
+      </section>
+
+      <section class="date-section" id="date">
+        <div class="date-card">
+          <img class="date-card__bg" src="./assets/figma/date-bg.jpg" alt="" />
+          <img class="date-card__overlay" src="./assets/figma/date-overlay.png" alt="" />
+
+          <div class="date-card__content">
+            <div class="date-info">
+              <h1>Дата торжества</h1>
+              <p>
+                Особенный день, который мы очень хотим провести в окружении близких и дорогих нам людей.
+                Приглашаем вас быть рядом, чтобы разделить этот счастливый момент вместе с нами.
+              </p>
+            </div>
+
+            <div class="calendar" aria-label="Календарь июня 2026">
+              <p class="calendar__month">Июнь</p>
+              <div class="calendar__grid calendar__grid--weekdays" aria-hidden="true">
+                <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+              </div>
+              <div class="calendar__grid">
+                <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span>
+                <span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span>
+                <span>15</span><span>16</span><span>17</span><span>18</span><span class="is-selected"><picture><source media="(max-width: 799.98px)" srcset="./assets/figma/calendar-day-19-mobile.svg" /><img class="calendar__day-svg" src="./assets/figma/calendar-day-19.svg" alt="19" /></picture></span><span>20</span><span>21</span>
+                <span>22</span><span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span>
+              </div>
+            </div>
+
+          </div>
+
+          <picture class="calendar__selected-day-copy" aria-hidden="true">
+            <source media="(max-width: 799.98px)" srcset="./assets/figma/calendar-day-19-mobile.svg" />
+            <img class="calendar__day-svg" src="./assets/figma/calendar-day-19.svg" alt="" />
+          </picture>
+        </div>
+      </section>
+
+      <section class="schedule section-panel section-panel--white" id="schedule">
+        <div class="section-copy">
+          <h1 class="texture-title">Официальная часть</h1>
+          <p class="section-lead">
+            День начнется с торжественной регистрации, поэтому просим заранее продумать маршрут и
+            приехать вовремя
+          </p>
+        </div>
+
+        <div class="timeline">
+          <article class="timeline__item">
+            <h2 class="texture-title texture-title--time">10:15 – 11:00</h2>
+            <div class="timeline__text">
+              <p>Торжественная регистрация</p>
+              <p>ЗАГС, мкр Закамск, Кировоградская, 43</p>
+            </div>
+          </article>
+          <article class="timeline__item">
+            <h2 class="texture-title texture-title--time">11:00 – 12:30</h2>
+            <div class="timeline__text">
+              <p>Фуршет и прогулка с фотографом по набережной</p>
+            </div>
+          </article>
+          <article class="timeline__item">
+            <h2 class="texture-title texture-title--time">13:00 – 15:00</h2>
+            <div class="timeline__text">
+              <p>Небольшая пауза перед основным празднованием</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="celebration section-panel" id="celebration">
+        <div class="section-copy section-copy--narrow">
+          <h1 class="texture-title">Празднование</h1>
+          <p class="section-lead">Текст</p>
+        </div>
+      </section>
+
+      <section class="dress-code section-panel" id="dress-code">
+        <div class="section-copy section-copy--narrow">
+          <h1 class="texture-title">Дресс—код</h1>
+          <p class="section-lead">
+            Нам будет приятно, если вы поддержите цветовую гамму торжества и выберете наряды в
+            оттенках цветовой палитрой нашей свадьбы.
+          </p>
+        </div>
+
+        <div class="palette" aria-label="Цветовая палитра свадьбы">
+          <span class="palette__color palette__color--black"></span>
+          <span class="palette__color palette__color--brown"></span>
+          <span class="palette__color palette__color--tan"></span>
+          <span class="palette__color palette__color--gold"></span>
+          <span class="palette__color palette__color--cream"></span>
+          <span class="palette__color palette__color--sage"></span>
+          <span class="palette__color palette__color--green"></span>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const hero = document.querySelector(".hero");
+      const siteBlurTop = document.querySelector(".site__blur-top");
+      const heroBlur = document.querySelector(".hero__blur");
+      const heroNav = document.querySelector(".hero__nav");
+      const heroTitle = document.querySelector(".hero__title");
+      const heroTitleFull = document.querySelector(".hero__title-full");
+      const heroTitleShort = document.querySelector(".hero__title-short");
+      const heroTopCompensation = document.querySelector(".hero__top-compensation");
+      const heroDate = document.querySelector(".hero__date");
+      const heroVideo = document.querySelector(".site__video");
+      const siteHeader = document.querySelector(".site-header");
+      const siteHeaderBrand = document.querySelector(".site-header__brand");
+      const dateSection = document.querySelector(".date-section");
+      const dateCard = document.querySelector(".date-card");
+      const selectedDayPicture = document.querySelector(".calendar .is-selected picture");
+      const selectedDayCopy = document.querySelector(".calendar__selected-day-copy");
+      const site = document.querySelector(".site");
+      const root = document.documentElement;
+      const minHeroHeight = 60;
+      const navHideHeight = 300;
+      const navFadeDistance = 60;
+      let maxTitleSize = 100;
+      let minTitleSize = 50;
+      let maxNavSize = 16;
+      const minNavSize = 10;
+      let maxHeroPaddingTop = 40;
+      let maxHeroPaddingBottom = 40;
+      let dateHeight = 43;
+      const frameDuration = 1000 / 120;
+      let viewportHeight = window.innerHeight;
+      let shrinkDistance = Math.max(viewportHeight - minHeroHeight, 0);
+      let animationFrame = null;
+      let lastFrameTime = 0;
+      let lastRenderedScrollY = -1;
+      let lastHeroHeight = null;
+      let lastHeroPaddingY = null;
+      let lastBlurOpacity = null;
+      let lastNavOpacity = null;
+      let lastNavSize = null;
+      let lastDateOpacity = null;
+      let lastTitleFullOpacity = null;
+      let lastTitleShortOpacity = null;
+      let lastTitleSize = null;
+      let lastSiteHeaderOpacity = null;
+      let displayedSiteHeaderOpacity = 0;
+      let targetSiteHeaderOpacity = 0;
+
+      const updateSiteScale = () => {
+        if (!site) {
+          return;
+        }
+
+        if (window.innerWidth < 390) {
+          site.style.zoom = String(window.innerWidth / 390);
+          return;
+        }
+
+        site.style.zoom = "";
+      };
+
+      const updateMobileDatePan = () => {
+        if (!dateSection) {
+          return;
+        }
+
+        if (window.innerWidth >= 800) {
+          dateSection.style.removeProperty("--date-image-pan-x");
+          if (selectedDayCopy) {
+            selectedDayCopy.removeAttribute("style");
+          }
+          return;
+        }
+
+        const rect = dateSection.getBoundingClientRect();
+        const imageWidth = 990.852;
+        const visibleWidth = dateSection.clientWidth || Math.min(window.innerWidth, 390);
+        const maxOffset = Math.max(imageWidth - visibleWidth, 0);
+        const progress = Math.min(Math.max((viewportHeight - rect.top) / (viewportHeight + rect.height), 0), 1);
+
+        dateSection.style.setProperty("--date-image-pan-x", `${-maxOffset * progress}px`);
+
+        if (dateCard && selectedDayPicture && selectedDayCopy) {
+          const sourceRect = selectedDayPicture.getBoundingClientRect();
+          const cardRect = dateCard.getBoundingClientRect();
+          selectedDayCopy.style.left = `${sourceRect.left - cardRect.left + sourceRect.width / 2}px`;
+          selectedDayCopy.style.top = `${sourceRect.top - cardRect.top + sourceRect.height / 2}px`;
+        }
+      };
+
+      const updateHeroMetrics = () => {
+        viewportHeight = window.innerHeight;
+        const isMobileWidth = window.innerWidth < 800;
+        const isTabletWidth = window.innerWidth < 1200;
+        maxTitleSize = isMobileWidth ? 40 : isTabletWidth ? 60 : 100;
+        minTitleSize = 50;
+        maxNavSize = 16;
+        maxHeroPaddingTop = 40;
+        maxHeroPaddingBottom = 40;
+        dateHeight = isMobileWidth ? 28 : 43;
+        shrinkDistance = Math.max(viewportHeight - minHeroHeight, 0);
+        root.style.setProperty("--hero-flow-offset", `${viewportHeight}px`);
+      };
+
+      const renderHeroState = () => {
+        if (!hero) {
+          return;
+        }
+
+        const isMobileWidth = window.innerWidth < 800;
+
+        if (isMobileWidth) {
+          const scrollY = window.scrollY;
+          const minMobileHeroHeight = 120;
+          const mobileShrinkDistance = Math.max(viewportHeight - minMobileHeroHeight, 1);
+          const shrinkProgress = Math.min(Math.max(scrollY / mobileShrinkDistance, 0), 1);
+          const heroHeight = Math.max(viewportHeight - Math.min(scrollY, mobileShrinkDistance), minMobileHeroHeight);
+          const heroExitY = -Math.max(scrollY - mobileShrinkDistance, 0);
+          const exitProgress = Math.min(Math.max((scrollY - mobileShrinkDistance) / minMobileHeroHeight, 0), 1);
+          const titleScale = 1 - 0.28 * shrinkProgress;
+          const titleTranslateY = -minMobileHeroHeight * exitProgress;
+          const dateOpacity = 1 - shrinkProgress;
+
+          hero.style.height = `${heroHeight}px`;
+          hero.style.paddingTop = `${40 * (1 - shrinkProgress)}px`;
+          hero.style.paddingBottom = `${40 * (1 - shrinkProgress)}px`;
+          hero.style.transform = `translateY(${heroExitY}px)`;
+
+          if (heroTitleFull) {
+            heroTitleFull.style.opacity = String(1 - exitProgress);
+            heroTitleFull.style.transform = `translateY(${titleTranslateY}px) scale(${titleScale})`;
+          }
+
+          if (heroTitleShort) {
+            heroTitleShort.removeAttribute("style");
+          }
+
+          if (heroNav) {
+            heroNav.removeAttribute("style");
+          }
+
+          if (siteBlurTop) {
+            siteBlurTop.removeAttribute("style");
+          }
+
+          if (heroTopCompensation) {
+            heroTopCompensation.removeAttribute("style");
+          }
+
+          if (heroBlur) {
+            heroBlur.removeAttribute("style");
+          }
+
+          if (heroDate) {
+            heroDate.style.opacity = String(dateOpacity);
+            heroDate.style.visibility = dateOpacity <= 0 ? "hidden" : "visible";
+          }
+
+          if (heroVideo) {
+            heroVideo.removeAttribute("style");
+          }
+
+          if (siteHeader) {
+            siteHeader.removeAttribute("style");
+          }
+
+          updateMobileDatePan();
+          lastRenderedScrollY = window.scrollY;
+          return;
+        }
+
+        const scrollY = window.scrollY;
+        const heroHeight = Math.max(viewportHeight - Math.min(scrollY, shrinkDistance), minHeroHeight);
+        const shrinkProgress = shrinkDistance > 0 ? Math.min(Math.max(scrollY / shrinkDistance, 0), 1) : 1;
+        const navOpacity = Math.min(Math.max((heroHeight - navHideHeight) / navFadeDistance, 0), 1);
+        const navFadeProgress = 1 - navOpacity;
+        const navSize = maxNavSize - (maxNavSize - minNavSize) * navFadeProgress;
+        const compactProgress = Math.min(Math.max((navHideHeight - heroHeight) / (navHideHeight - minHeroHeight), 0), 1);
+        const dateFadeDistance = Math.max(viewportHeight - navHideHeight, 1);
+        const titleFadeEnd = 0.3;
+        const headerFadeStart = 0.38;
+        const headerFadeProgress = Math.min(Math.max((compactProgress - headerFadeStart) / (1 - headerFadeStart), 0), 1);
+        const headerEase = headerFadeProgress * headerFadeProgress * (3 - 2 * headerFadeProgress);
+        const blurOpacity = 1 - compactProgress;
+        const dateOpacity = Math.min(Math.max((heroHeight - navHideHeight) / dateFadeDistance, 0), 1);
+        const titleFullOpacity = 1 - Math.min(compactProgress / titleFadeEnd, 1);
+        const titleShortOpacity = 0;
+        const siteHeaderOpacity = headerEase;
+        targetSiteHeaderOpacity = siteHeaderOpacity;
+        const titleSize = maxTitleSize - (maxTitleSize - minTitleSize) * shrinkProgress;
+        const heroPaddingTop = maxHeroPaddingTop * (1 - shrinkProgress);
+        const heroPaddingBottom = maxHeroPaddingBottom * (1 - shrinkProgress);
+
+        if (heroHeight !== lastHeroHeight) {
+          hero.style.height = `${heroHeight}px`;
+          hero.style.zIndex = "1";
+          lastHeroHeight = heroHeight;
+        }
+
+        if (`${heroPaddingTop}:${heroPaddingBottom}` !== lastHeroPaddingY) {
+          hero.style.paddingTop = `${heroPaddingTop}px`;
+          hero.style.paddingBottom = `${heroPaddingBottom}px`;
+          lastHeroPaddingY = `${heroPaddingTop}:${heroPaddingBottom}`;
+        }
+
+        if (heroTitle && titleSize !== lastTitleSize) {
+          heroTitle.style.fontSize = `${titleSize}px`;
+          lastTitleSize = titleSize;
+        }
+
+        if (heroTitleFull && titleFullOpacity !== lastTitleFullOpacity) {
+          heroTitleFull.style.opacity = String(titleFullOpacity);
+          lastTitleFullOpacity = titleFullOpacity;
+        }
+
+        if (heroTitleShort && titleShortOpacity !== lastTitleShortOpacity) {
+          heroTitleShort.style.opacity = String(titleShortOpacity);
+          lastTitleShortOpacity = titleShortOpacity;
+        }
+
+        if (siteHeader) {
+          displayedSiteHeaderOpacity += (siteHeaderOpacity - displayedSiteHeaderOpacity) * 0.12;
+
+          if (Math.abs(siteHeaderOpacity - displayedSiteHeaderOpacity) < 0.001) {
+            displayedSiteHeaderOpacity = siteHeaderOpacity;
+          }
+
+          if (displayedSiteHeaderOpacity !== lastSiteHeaderOpacity) {
+            siteHeader.style.opacity = String(displayedSiteHeaderOpacity);
+            siteHeader.style.visibility = displayedSiteHeaderOpacity <= 0 ? "hidden" : "visible";
+            siteHeader.style.pointerEvents = displayedSiteHeaderOpacity > 0.05 ? "auto" : "none";
+            lastSiteHeaderOpacity = displayedSiteHeaderOpacity;
+          }
+        }
+
+        if (heroNav && navOpacity !== lastNavOpacity) {
+          const navHeight = 22 * navOpacity;
+          heroNav.style.opacity = String(navOpacity);
+          heroNav.style.maxHeight = `${navHeight}px`;
+          heroNav.style.visibility = navOpacity <= 0 ? "hidden" : "visible";
+          heroNav.style.pointerEvents = navOpacity <= 0 ? "none" : "auto";
+          lastNavOpacity = navOpacity;
+        }
+
+        if (heroNav && navSize !== lastNavSize) {
+          heroNav.style.fontSize = `${navSize}px`;
+          lastNavSize = navSize;
+        }
+
+        if (heroBlur && blurOpacity !== lastBlurOpacity) {
+          heroBlur.style.opacity = String(blurOpacity);
+          heroBlur.style.visibility = blurOpacity <= 0 ? "hidden" : "visible";
+          lastBlurOpacity = blurOpacity;
+        }
+
+        if (heroDate && dateOpacity !== lastDateOpacity) {
+          heroDate.style.opacity = String(dateOpacity);
+          heroDate.style.maxHeight = `${dateHeight}px`;
+          heroDate.style.visibility = dateOpacity <= 0 ? "hidden" : "visible";
+          lastDateOpacity = dateOpacity;
+        }
+
+        if (heroVideo) {
+          heroVideo.style.opacity = String(1 - shrinkProgress);
+        }
+
+        lastRenderedScrollY = scrollY;
+      };
+
+      const runHeroAnimation = (currentTime) => {
+        if (currentTime - lastFrameTime >= frameDuration) {
+          renderHeroState();
+          lastFrameTime = currentTime;
+        }
+
+        if (Math.abs(window.scrollY - lastRenderedScrollY) > 0.5 || Math.abs(targetSiteHeaderOpacity - displayedSiteHeaderOpacity) > 0.001) {
+          animationFrame = requestAnimationFrame(runHeroAnimation);
+          return;
+        }
+
+        animationFrame = null;
+      };
+
+      const requestHeroFrame = () => {
+        if (window.innerWidth < 800) {
+          requestAnimationFrame(renderHeroState);
+          return;
+        }
+
+        if (animationFrame === null) {
+          animationFrame = requestAnimationFrame(runHeroAnimation);
+        }
+      };
+
+      window.addEventListener("scroll", requestHeroFrame, { passive: true });
+      window.addEventListener("resize", () => {
+        updateSiteScale();
+        updateHeroMetrics();
+        updateMobileDatePan();
+        requestHeroFrame();
+      });
+      if (siteHeaderBrand) {
+        siteHeaderBrand.addEventListener("click", (event) => {
+          event.preventDefault();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      }
+      updateSiteScale();
+      updateHeroMetrics();
+      renderHeroState();
+    </script>
+  </body>
+</html>
