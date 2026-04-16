@@ -152,11 +152,69 @@
         </div>
       </section>
 
-      <section class="celebration section-panel" id="celebration">
-        <div class="section-copy section-copy--narrow">
-          <h1 class="texture-title">Празднование</h1>
-          <p class="section-lead">Текст</p>
+      <section class="evening-program section-panel" id="celebration">
+        <div class="section-copy">
+          <h1 class="texture-title">Вечерняя программа</h1>
         </div>
+
+        <div class="evening-program__content">
+          <div class="evening-program__times" aria-label="Вечерняя программа">
+            <article class="evening-program__item">
+              <h2 class="texture-title texture-title--time evening-program__time">
+                <span>15:00</span><span class="evening-program__dash"> – </span><span>16:00</span>
+              </h2>
+              <p>Сбор гостей</p>
+            </article>
+            <article class="evening-program__item">
+              <h2 class="texture-title texture-title--time evening-program__time">
+                <span>16:00</span><span class="evening-program__dash"> – </span><span>21:00</span>
+              </h2>
+              <p>Программа торжества</p>
+            </article>
+            <article class="evening-program__item">
+              <h2 class="texture-title texture-title--time evening-program__time">
+                <span>21:00</span><span class="evening-program__dash"> – </span><span>23:00</span>
+              </h2>
+              <p>Завершение праздника с танцами</p>
+            </article>
+          </div>
+
+          <div class="evening-program__photos">
+            <div class="evening-program__photo-frame evening-program__photo-frame--first">
+              <img src="./assets/figma/evening-1.jpg" alt="" loading="lazy" decoding="async" />
+            </div>
+            <div class="evening-program__photo-frame evening-program__photo-frame--second">
+              <img src="./assets/figma/evening-2.jpg" alt="" loading="lazy" decoding="async" />
+            </div>
+            <div class="evening-program__photo-frame evening-program__photo-frame--third">
+              <img src="./assets/figma/evening-3.jpg" alt="" loading="lazy" decoding="async" />
+            </div>
+          </div>
+        </div>
+
+        <img class="evening-program__flowers evening-program__flowers--left" src="./assets/figma/evening-flowers.png" alt="" loading="lazy" decoding="async" />
+        <img class="evening-program__flowers evening-program__flowers--right" src="./assets/figma/evening-flowers.png" alt="" loading="lazy" decoding="async" />
+      </section>
+
+      <section class="location-section" id="location">
+        <img class="location-section__image" src="./assets/figma/location-evening.jpg" alt="" loading="lazy" decoding="async" />
+        <img class="location-section__blur" src="./assets/blur-2.png" alt="" aria-hidden="true" />
+
+        <div class="section-copy location-section__copy">
+          <h1 class="texture-title">Локация вечера</h1>
+          <p class="section-lead">Банкетный зал «Энергия Леса», Энергетиков 50А</p>
+        </div>
+
+        <a
+          class="location-section__button"
+          href="https://2gis.ru/geo/56.159285,57.954053"
+          data-desktop-href="https://2gis.ru/geo/56.159285,57.954053"
+          data-mobile-href="geo:57.954053,56.159285?q=57.954053,56.159285(%D0%91%D0%B0%D0%BD%D0%BA%D0%B5%D1%82%D0%BD%D1%8B%D0%B9%20%D0%B7%D0%B0%D0%BB%20%D0%AD%D0%BD%D0%B5%D1%80%D0%B3%D0%B8%D1%8F%20%D0%9B%D0%B5%D1%81%D0%B0)"
+          target="_blank"
+          rel="noopener"
+        >
+          Смотреть на карте
+        </a>
       </section>
 
       <section class="dress-code section-panel" id="dress-code">
@@ -196,6 +254,10 @@
       const siteHeaderBrand = document.querySelector(".site-header__brand");
       const dateSection = document.querySelector(".date-section");
       const dateCard = document.querySelector(".date-card");
+      const locationSection = document.querySelector(".location-section");
+      const locationCopy = document.querySelector(".location-section__copy");
+      const locationTitle = document.querySelector(".location-section__copy .texture-title");
+      const locationButton = document.querySelector(".location-section__button");
       const selectedDayPicture = document.querySelector(".calendar .is-selected picture");
       const selectedDayCopy = document.querySelector(".calendar__selected-day-copy");
       const site = document.querySelector(".site");
@@ -280,6 +342,42 @@
         }
       };
 
+      const updateLocationButton = () => {
+        if (!locationSection || !locationTitle || !locationButton) {
+          return;
+        }
+
+        const sectionRect = locationSection.getBoundingClientRect();
+        const titleRect = locationTitle.getBoundingClientRect();
+        const showLine = viewportHeight * 0.48 + 30;
+        const shouldShow = titleRect.bottom <= showLine && sectionRect.top < viewportHeight && sectionRect.bottom > 60;
+        const shouldPin = shouldShow && sectionRect.bottom <= viewportHeight;
+        locationButton.classList.toggle("is-visible", shouldShow);
+        locationButton.classList.toggle("is-pinned", shouldPin);
+      };
+
+      const updateLocationMapHref = () => {
+        if (!locationButton) {
+          return;
+        }
+
+        const isMobileWidth = window.innerWidth < 800;
+        const targetHref = isMobileWidth ? locationButton.dataset.mobileHref : locationButton.dataset.desktopHref;
+
+        if (targetHref) {
+          locationButton.href = targetHref;
+        }
+
+        if (isMobileWidth) {
+          locationButton.removeAttribute("target");
+          locationButton.removeAttribute("rel");
+          return;
+        }
+
+        locationButton.target = "_blank";
+        locationButton.rel = "noopener";
+      };
+
       const updateHeroMetrics = () => {
         viewportHeight = window.innerHeight;
         root.style.setProperty("--viewport-height", `${viewportHeight}px`);
@@ -362,6 +460,7 @@
           }
 
           updateMobileDatePan();
+          updateLocationButton();
           lastRenderedScrollY = window.scrollY;
           return;
         }
@@ -466,6 +565,7 @@
           heroVideo.style.opacity = String(1 - shrinkProgress);
         }
 
+        updateLocationButton();
         lastRenderedScrollY = scrollY;
       };
 
@@ -506,6 +606,8 @@
         selectedDayCopyPositioned = false;
         lastDatePanX = null;
         updateMobileDatePan();
+        updateLocationButton();
+        updateLocationMapHref();
         requestHeroFrame();
       });
       if (siteHeaderBrand) {
@@ -516,6 +618,7 @@
       }
       updateSiteScale();
       updateHeroMetrics();
+      updateLocationMapHref();
       renderHeroState();
     </script>
   </body>
