@@ -1850,8 +1850,17 @@ h2 {
     overflow-x: auto;
     overflow-y: visible;
     scrollbar-width: none;
-    overscroll-behavior-x: contain;
+    overscroll-behavior-x: auto;
+    touch-action: pan-y;
     -webkit-overflow-scrolling: touch;
+  }
+
+  .evening-program__content.is-horizontal-gesture {
+    touch-action: pan-x;
+  }
+
+  .evening-program__content.is-vertical-gesture {
+    overflow-x: hidden;
   }
 
   .evening-program__content::-webkit-scrollbar {

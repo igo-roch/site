@@ -343,6 +343,9 @@
       let locationButtonStartY = 0;
       let locationButtonEndY = 0;
       let scrollLockY = 0;
+      let eveningTouchStartX = 0;
+      let eveningTouchStartY = 0;
+      let eveningTouchDirection = null;
 
       const getSiteScale = () => {
         const viewportWidth = window.innerWidth;
@@ -574,6 +577,15 @@
         document.body.style.right = "";
         document.body.style.width = "";
         window.scrollTo(0, scrollLockY);
+      };
+
+      const resetEveningTouchDirection = () => {
+        if (!eveningSlider) {
+          return;
+        }
+
+        eveningTouchDirection = null;
+        eveningSlider.classList.remove("is-horizontal-gesture", "is-vertical-gesture");
       };
 
       const setupGuestForm = () => {
@@ -916,6 +928,39 @@
       });
       if (eveningSlider) {
         eveningSlider.addEventListener("scroll", updateEveningSlider, { passive: true });
+        eveningSlider.addEventListener(
+          "touchstart",
+          (event) => {
+            const touch = event.touches[0];
+            eveningTouchStartX = touch.clientX;
+            eveningTouchStartY = touch.clientY;
+            resetEveningTouchDirection();
+          },
+          { passive: true }
+        );
+        eveningSlider.addEventListener(
+          "touchmove",
+          (event) => {
+            if (eveningTouchDirection || event.touches.length !== 1) {
+              return;
+            }
+
+            const touch = event.touches[0];
+            const deltaX = touch.clientX - eveningTouchStartX;
+            const deltaY = touch.clientY - eveningTouchStartY;
+
+            if (Math.abs(deltaX) < 6 && Math.abs(deltaY) < 6) {
+              return;
+            }
+
+            eveningTouchDirection = Math.abs(deltaX) > Math.abs(deltaY) ? "horizontal" : "vertical";
+            eveningSlider.classList.toggle("is-horizontal-gesture", eveningTouchDirection === "horizontal");
+            eveningSlider.classList.toggle("is-vertical-gesture", eveningTouchDirection === "vertical");
+          },
+          { passive: true }
+        );
+        eveningSlider.addEventListener("touchend", resetEveningTouchDirection, { passive: true });
+        eveningSlider.addEventListener("touchcancel", resetEveningTouchDirection, { passive: true });
       }
       if (siteHeaderBrand) {
         siteHeaderBrand.addEventListener("click", (event) => {
