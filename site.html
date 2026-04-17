@@ -107,7 +107,7 @@
               <div class="calendar__grid">
                 <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span>
                 <span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span>
-                <span>15</span><span>16</span><span>17</span><span>18</span><span class="is-selected"><picture><source media="(max-width: 799.98px)" srcset="./assets/figma/calendar-day-19-mobile.svg" /><img class="calendar__day-svg" src="./assets/figma/calendar-day-19.svg" alt="19" /></picture></span><span>20</span><span>21</span>
+                <span>15</span><span>16</span><span>17</span><span>18</span><span class="is-selected"><picture><source media="(max-width: 1199.98px)" srcset="./assets/figma/calendar-day-19-mobile.svg" /><img class="calendar__day-svg" src="./assets/figma/calendar-day-19.svg" alt="19" /></picture></span><span>20</span><span>21</span>
                 <span>22</span><span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span>
               </div>
             </div>
@@ -115,7 +115,7 @@
           </div>
 
           <picture class="calendar__selected-day-copy" aria-hidden="true">
-            <source media="(max-width: 799.98px)" srcset="./assets/figma/calendar-day-19-mobile.svg" />
+            <source media="(max-width: 1199.98px)" srcset="./assets/figma/calendar-day-19-mobile.svg" />
             <img class="calendar__day-svg" src="./assets/figma/calendar-day-19.svg" alt="" />
           </picture>
         </div>
@@ -310,16 +310,51 @@
       let selectedDayCopyPositioned = false;
       let lastDatePanX = null;
 
+      const getSiteScale = () => {
+        const viewportWidth = window.innerWidth;
+
+        if (viewportWidth >= 800 && viewportWidth < 1200) {
+          return viewportWidth / 799;
+        }
+
+        if (viewportWidth < 390) {
+          return viewportWidth / 390;
+        }
+
+        if (viewportWidth > 1920) {
+          return viewportWidth / 1920;
+        }
+
+        return 1;
+      };
+
       const updateSiteScale = () => {
         if (!site) {
           return;
         }
 
-        if (window.innerWidth < 390) {
-          site.style.zoom = String(window.innerWidth / 390);
+        const viewportWidth = window.innerWidth;
+        const siteScale = getSiteScale();
+
+        if (viewportWidth >= 800 && viewportWidth < 1200) {
+          site.style.width = "799px";
+          site.style.zoom = String(siteScale);
           return;
         }
 
+        if (viewportWidth < 390) {
+          site.style.width = "";
+          site.style.zoom = String(siteScale);
+          return;
+        }
+
+        if (viewportWidth > 1920) {
+          site.style.width = "1920px";
+          site.style.zoom = String(siteScale);
+          return;
+        }
+
+        site.style.width = "";
         site.style.zoom = "";
       };
 
@@ -328,7 +363,7 @@
           return;
         }
 
-        if (window.innerWidth >= 800) {
+        if (window.innerWidth >= 1200) {
           dateSection.style.removeProperty("--date-image-pan-x");
           lastDatePanX = null;
           if (selectedDayCopy) {
@@ -339,6 +374,10 @@
         }
 
         const rect = dateSection.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > viewportHeight) {
+          return;
+        }
+
         const imageWidth = 990.852;
         const visibleWidth = dateSection.clientWidth || Math.min(window.innerWidth, 390);
         const maxOffset = Math.max(imageWidth - visibleWidth, 0);
@@ -365,9 +404,14 @@
         }
 
         const sectionRect = locationSection.getBoundingClientRect();
+        if (sectionRect.top > viewportHeight || sectionRect.bottom < 0) {
+          locationButton.classList.remove("is-visible", "is-pinned");
+          return;
+        }
+
         const titleRect = locationTitle.getBoundingClientRect();
         const showLine = viewportHeight * 0.48 + 30;
-        const locationButtonOffset = window.innerWidth < 800 ? 40 : 60;
+        const locationButtonOffset = window.innerWidth < 1200 ? 40 : 60;
         const shouldShow = titleRect.bottom <= showLine && sectionRect.top < viewportHeight && sectionRect.bottom > locationButtonOffset;
         const shouldPin = shouldShow && sectionRect.bottom <= viewportHeight;
         locationButton.classList.toggle("is-visible", shouldShow);
@@ -389,7 +433,7 @@
           return;
         }
 
-        if (window.innerWidth > 649.98) {
+        if (window.innerWidth > 1199.98) {
           eveningProgram.style.removeProperty("--evening-slider-scroll");
           eveningProgram.style.removeProperty("--evening-slider-end-progress");
           eveningProgram.classList.remove("is-slider-end");
@@ -466,9 +510,9 @@
       };
 
       const updateHeroMetrics = () => {
-        viewportHeight = window.innerHeight;
+        viewportHeight = window.innerHeight / getSiteScale();
         root.style.setProperty("--viewport-height", `${viewportHeight}px`);
-        const isMobileWidth = window.innerWidth < 800;
+        const isMobileWidth = window.innerWidth < 1200;
         const isTabletWidth = window.innerWidth < 1200;
         maxTitleSize = isMobileWidth ? 40 : isTabletWidth ? 60 : 100;
         minTitleSize = 50;
@@ -485,7 +529,7 @@
           return;
         }
 
-        const isMobileWidth = window.innerWidth < 800;
+        const isMobileWidth = window.innerWidth < 1200;
 
         if (isMobileWidth) {
           const scrollY = window.scrollY;
@@ -662,7 +706,7 @@
       };
 
       const requestHeroFrame = () => {
-        if (window.innerWidth < 800) {
+        if (window.innerWidth < 1200) {
           if (animationFrame === null) {
             animationFrame = requestAnimationFrame(() => {
               animationFrame = null;
