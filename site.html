@@ -255,6 +255,7 @@
     <script>
       const hero = document.querySelector(".hero");
       const siteBlurTop = document.querySelector(".site__blur-top");
+      const siteBlurBottom = document.querySelector(".site__blur-bottom");
       const heroBlur = document.querySelector(".hero__blur");
       const heroNav = document.querySelector(".hero__nav");
       const heroTitle = document.querySelector(".hero__title");
@@ -309,6 +310,7 @@
       let targetSiteHeaderOpacity = 0;
       let selectedDayCopyPositioned = false;
       let lastDatePanX = null;
+      let isHeroVideoPlaying = true;
 
       const getSiteScale = () => {
         const viewportWidth = window.innerWidth;
@@ -448,6 +450,42 @@
         eveningProgram.classList.toggle("is-slider-end", maxScroll > 0 && maxScroll - scrollLeft <= 2);
       };
 
+      const updateHeroVideoState = (isVisible, opacity = 1) => {
+        if (!heroVideo) {
+          return;
+        }
+
+        heroVideo.style.opacity = String(opacity);
+        heroVideo.style.visibility = isVisible ? "visible" : "hidden";
+
+        if (isVisible && !isHeroVideoPlaying) {
+          heroVideo.play().catch(() => {});
+          isHeroVideoPlaying = true;
+          return;
+        }
+
+        if (!isVisible && isHeroVideoPlaying) {
+          heroVideo.pause();
+          isHeroVideoPlaying = false;
+        }
+      };
+
+      const updateMobileBlurBottom = (scrollY) => {
+        if (!siteBlurBottom) {
+          return;
+        }
+
+        if (window.innerWidth >= 1200) {
+          siteBlurBottom.style.removeProperty("--site-blur-bottom-lock-y");
+          return;
+        }
+
+        const videoHeight = 600;
+        const storyReachDistance = Math.max((viewportHeight - videoHeight) / 2, 0);
+        const lockY = Math.min(scrollY, storyReachDistance);
+        siteBlurBottom.style.setProperty("--site-blur-bottom-lock-y", `${lockY}px`);
+      };
+
       const setupGuestForm = () => {
         if (!guestForm) {
           return;
@@ -578,9 +616,8 @@
             heroDate.style.visibility = dateOpacity <= 0 ? "hidden" : "visible";
           }
 
-          if (heroVideo) {
-            heroVideo.removeAttribute("style");
-          }
+          updateHeroVideoState(heroHeight + heroExitY > 0);
+          updateMobileBlurBottom(scrollY);
 
           if (siteHeader) {
             siteHeader.removeAttribute("style");
@@ -685,9 +722,7 @@
           lastDateOpacity = dateOpacity;
         }
 
-        if (heroVideo) {
-          heroVideo.style.opacity = String(1 - shrinkProgress);
-        }
+        updateHeroVideoState(shrinkProgress < 1, 1 - shrinkProgress);
 
         updateLocationButton();
         lastRenderedScrollY = scrollY;
