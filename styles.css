@@ -1396,9 +1396,10 @@ h2 {
   }
 
   .hero__blur-bg {
+    top: -68px;
     width: 1000px;
-    height: 800px;
-    filter: blur(125px);
+    height: 1358px;
+    filter: blur(62.5px);
   }
 
   .story {

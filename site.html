@@ -515,7 +515,7 @@
         const isMobileWidth = window.innerWidth < 1200;
         const isTabletWidth = window.innerWidth < 1200;
         maxTitleSize = isMobileWidth ? 40 : isTabletWidth ? 60 : 100;
-        minTitleSize = 50;
+        minTitleSize = isMobileWidth ? 29 : 50;
         maxNavSize = 16;
         maxHeroPaddingTop = 40;
         maxHeroPaddingBottom = 40;
@@ -593,8 +593,10 @@
         }
 
         const scrollY = window.scrollY;
-        const heroHeight = Math.max(viewportHeight - Math.min(scrollY, shrinkDistance), minHeroHeight);
-        const shrinkProgress = shrinkDistance > 0 ? Math.min(Math.max(scrollY / shrinkDistance, 0), 1) : 1;
+        const effectiveMinHeroHeight = window.innerWidth < 800 ? 120 : minHeroHeight;
+        const effectiveShrinkDistance = Math.max(viewportHeight - effectiveMinHeroHeight, 0);
+        const heroHeight = Math.max(viewportHeight - Math.min(scrollY, effectiveShrinkDistance), effectiveMinHeroHeight);
+        const shrinkProgress = effectiveShrinkDistance > 0 ? Math.min(Math.max(scrollY / effectiveShrinkDistance, 0), 1) : 1;
         const navOpacity = Math.min(Math.max((heroHeight - navHideHeight) / navFadeDistance, 0), 1);
         const navFadeProgress = 1 - navOpacity;
         const navSize = maxNavSize - (maxNavSize - minNavSize) * navFadeProgress;
