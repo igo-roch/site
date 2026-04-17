@@ -48,6 +48,25 @@
         <p class="hero__date">19.06.2026</p>
       </section>
 
+      <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+        <div class="mobile-menu__logo" aria-hidden="true">И&amp;М</div>
+        <nav class="mobile-menu__nav" aria-label="Мобильная навигация">
+          <a href="#story">О нас</a>
+          <a href="#date">Дата торжества</a>
+          <a href="#schedule">План дня</a>
+          <a href="#celebration">Вечерняя программа</a>
+          <a href="#dress-code">Дресс-код</a>
+          <a href="#wishes">Заполнить форму</a>
+        </nav>
+        <button class="mobile-menu__close" type="button">Закрыть</button>
+      </div>
+
+      <div class="mobile-header" aria-label="Мобильная навигация">
+        <button class="mobile-menu-trigger" type="button" aria-controls="mobile-menu" aria-expanded="false">
+          Меню
+        </button>
+      </div>
+
       <header class="site-header" aria-label="Навигация">
         <div class="site-header__group site-header__group--left">
           <a href="#story">О нас</a>
@@ -262,6 +281,10 @@
       const heroTitleFull = document.querySelector(".hero__title-full");
       const heroTitleShort = document.querySelector(".hero__title-short");
       const heroTopCompensation = document.querySelector(".hero__top-compensation");
+      const mobileHeader = document.querySelector(".mobile-header");
+      const mobileMenuTrigger = document.querySelector(".mobile-menu-trigger");
+      const mobileMenu = document.querySelector(".mobile-menu");
+      const mobileMenuClose = document.querySelector(".mobile-menu__close");
       const heroDate = document.querySelector(".hero__date");
       const heroVideo = document.querySelector(".site__video");
       const siteHeader = document.querySelector(".site-header");
@@ -311,6 +334,15 @@
       let selectedDayCopyPositioned = false;
       let lastDatePanX = null;
       let isHeroVideoPlaying = true;
+      let lastHeroVideoVisible = null;
+      let lastHeroVideoOpacity = null;
+      let lastBlurBottomLockY = null;
+      let lastMobileHeaderPaddingTop = null;
+      let datePanStartY = 0;
+      let datePanEndY = 0;
+      let locationButtonStartY = 0;
+      let locationButtonEndY = 0;
+      let scrollLockY = 0;
 
       const getSiteScale = () => {
         const viewportWidth = window.innerWidth;
@@ -455,8 +487,15 @@
           return;
         }
 
-        heroVideo.style.opacity = String(opacity);
-        heroVideo.style.visibility = isVisible ? "visible" : "hidden";
+        if (opacity !== lastHeroVideoOpacity) {
+          heroVideo.style.opacity = String(opacity);
+          lastHeroVideoOpacity = opacity;
+        }
+
+        if (isVisible !== lastHeroVideoVisible) {
+          heroVideo.style.visibility = isVisible ? "visible" : "hidden";
+          lastHeroVideoVisible = isVisible;
+        }
 
         if (isVisible && !isHeroVideoPlaying) {
           heroVideo.play().catch(() => {});
@@ -477,13 +516,64 @@
 
         if (window.innerWidth >= 1200) {
           siteBlurBottom.style.removeProperty("--site-blur-bottom-lock-y");
+          lastBlurBottomLockY = null;
           return;
         }
 
         const videoHeight = 600;
         const storyReachDistance = Math.max((viewportHeight - videoHeight) / 2, 0);
         const lockY = Math.min(scrollY, storyReachDistance);
-        siteBlurBottom.style.setProperty("--site-blur-bottom-lock-y", `${lockY}px`);
+
+        if (lockY !== lastBlurBottomLockY) {
+          siteBlurBottom.style.setProperty("--site-blur-bottom-lock-y", `${lockY}px`);
+          lastBlurBottomLockY = lockY;
+        }
+      };
+
+      const updateMobileHeader = (progress) => {
+        if (!mobileHeader) {
+          return;
+        }
+
+        if (window.innerWidth >= 1200) {
+          mobileHeader.style.removeProperty("--mobile-header-padding-top");
+          lastMobileHeaderPaddingTop = null;
+          return;
+        }
+
+        const paddingTop = 40 - 28 * progress;
+        if (paddingTop !== lastMobileHeaderPaddingTop) {
+          mobileHeader.style.setProperty("--mobile-header-padding-top", `${paddingTop}px`);
+          lastMobileHeaderPaddingTop = paddingTop;
+        }
+      };
+
+      const setMobileMenuOpen = (isOpen) => {
+        if (!mobileMenu || !mobileMenuTrigger) {
+          return;
+        }
+
+        mobileMenu.classList.toggle("is-open", isOpen);
+        mobileHeader?.classList.toggle("is-menu-open", isOpen);
+        mobileMenu.setAttribute("aria-hidden", isOpen ? "false" : "true");
+        mobileMenuTrigger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+
+        if (isOpen) {
+          scrollLockY = window.scrollY;
+          document.body.style.position = "fixed";
+          document.body.style.top = `-${scrollLockY}px`;
+          document.body.style.left = "0";
+          document.body.style.right = "0";
+          document.body.style.width = "100%";
+          return;
+        }
+
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.left = "";
+        document.body.style.right = "";
+        document.body.style.width = "";
+        window.scrollTo(0, scrollLockY);
       };
 
       const setupGuestForm = () => {
@@ -560,6 +650,16 @@
         dateHeight = isMobileWidth ? 28 : 45;
         shrinkDistance = Math.max(viewportHeight - minHeroHeight, 0);
         root.style.setProperty("--hero-flow-offset", `${viewportHeight}px`);
+
+        if (dateSection) {
+          datePanStartY = Math.max(dateSection.offsetTop - viewportHeight, 0);
+          datePanEndY = dateSection.offsetTop + dateSection.offsetHeight;
+        }
+
+        if (locationSection) {
+          locationButtonStartY = Math.max(locationSection.offsetTop - viewportHeight, 0);
+          locationButtonEndY = locationSection.offsetTop + locationSection.offsetHeight;
+        }
       };
 
       const renderHeroState = () => {
@@ -618,13 +718,22 @@
 
           updateHeroVideoState(heroHeight + heroExitY > 0);
           updateMobileBlurBottom(scrollY);
+          updateMobileHeader(shrinkProgress);
 
           if (siteHeader) {
             siteHeader.removeAttribute("style");
           }
 
-          updateMobileDatePan();
-          updateLocationButton();
+          if (scrollY >= datePanStartY && scrollY <= datePanEndY) {
+            updateMobileDatePan();
+          }
+
+          if (scrollY >= locationButtonStartY && scrollY <= locationButtonEndY) {
+            updateLocationButton();
+          } else if (locationButton && locationButton.classList.contains("is-visible")) {
+            updateLocationButton();
+          }
+
           lastRenderedScrollY = window.scrollY;
           return;
         }
@@ -814,6 +923,28 @@
           window.scrollTo({ top: 0, behavior: "smooth" });
         });
       }
+      if (mobileMenuTrigger) {
+        mobileMenuTrigger.addEventListener("click", () => {
+          setMobileMenuOpen(!mobileMenu?.classList.contains("is-open"));
+        });
+      }
+      if (mobileMenu) {
+        mobileMenu.querySelectorAll("a").forEach((link) => {
+          link.addEventListener("click", () => {
+            setMobileMenuOpen(false);
+          });
+        });
+      }
+      if (mobileMenuClose) {
+        mobileMenuClose.addEventListener("click", () => {
+          setMobileMenuOpen(false);
+        });
+      }
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          setMobileMenuOpen(false);
+        }
+      });
       updateSiteScale();
       updateHeroMetrics();
       updateLocationMapHref();

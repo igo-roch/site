@@ -293,6 +293,12 @@ h2 {
   display: none;
 }
 
+.mobile-menu-trigger,
+.mobile-header,
+.mobile-menu {
+  display: none;
+}
+
 .hero__date {
   position: relative;
   z-index: 2;
@@ -1465,6 +1471,145 @@ h2 {
     width: 100%;
     height: 20px;
     flex-shrink: 0;
+  }
+
+  .mobile-header {
+    position: fixed;
+    z-index: 21;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: var(--mobile-header-padding-top, 40px);
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .mobile-header::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    left: 50%;
+    top: -102px;
+    width: 1200px;
+    height: 192px;
+    background: var(--page-bg);
+    filter: blur(62.5px);
+    pointer-events: none;
+    transform: translateX(-50%) translateZ(0);
+  }
+
+  .mobile-header.is-menu-open::before {
+    opacity: 0;
+  }
+
+  .mobile-menu-trigger {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--gold);
+    font-family: var(--font-body);
+    font-size: var(--inter-font-size);
+    font-weight: 360;
+    line-height: 1.4;
+    text-align: center;
+    text-transform: uppercase;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+
+  .mobile-header.is-menu-open .mobile-menu-trigger {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .mobile-menu {
+    position: fixed;
+    z-index: 20;
+    inset: 0;
+    display: flex;
+    padding: 20px var(--padding-horizontal) 10px;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    background: var(--green);
+    color: #d9d9d9;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(100%);
+    transition: transform 360ms ease, opacity 360ms ease, visibility 360ms ease;
+  }
+
+  .mobile-menu__logo {
+    position: absolute;
+    left: 50%;
+    top: 24px;
+    width: 78px;
+    color: #d9d9d9;
+    font-family: var(--font-title);
+    font-size: var(--title2-font-size);
+    font-weight: 400;
+    line-height: 1;
+    text-align: center;
+    transform: translateX(-50%);
+  }
+
+  .mobile-menu.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(0);
+  }
+
+  .mobile-menu__nav {
+    width: 100%;
+    min-height: min-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    color: #d9d9d9;
+    font-family: var(--font-title);
+    font-size: var(--title2-font-size);
+    font-weight: 700;
+    line-height: 1.17;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .mobile-menu__nav a {
+    display: block;
+    width: 100%;
+  }
+
+  .mobile-menu__close {
+    position: absolute;
+    left: 50%;
+    bottom: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: var(--inter-font-size);
+    font-weight: 360;
+    line-height: 1.4;
+    text-align: center;
+    text-transform: uppercase;
+    cursor: pointer;
+    transform: translateX(-50%);
   }
 
   .hero__title {
