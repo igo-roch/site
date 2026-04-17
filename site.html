@@ -2,7 +2,7 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Игорь и Мария</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
@@ -27,6 +27,7 @@
       </div>
 
       <section class="hero" id="home" aria-label="Главный экран">
+        <img class="hero__blur-bottom" src="./assets/blur%20bottom.png" alt="" aria-hidden="true" />
         <div class="hero__blur" aria-hidden="true">
           <div class="hero__blur-bg"></div>
         </div>
@@ -35,7 +36,7 @@
 
         <nav class="hero__nav" aria-label="Навигация">
           <a href="#story">О нас</a>
-          <a href="#date">Дата</a>
+          <a href="#date">Дата торжества</a>
           <a href="#schedule">План дня</a>
           <a href="#dress-code">Дресс-код</a>
         </nav>
@@ -50,7 +51,7 @@
       <header class="site-header" aria-label="Навигация">
         <div class="site-header__group site-header__group--left">
           <a href="#story">О нас</a>
-          <a href="#date">Дата</a>
+          <a href="#date">Дата торжества</a>
         </div>
         <a class="site-header__brand" href="#home" aria-label="Игорь и Мария">
           <img src="./assets/figma/header-logo.svg" alt="" aria-hidden="true" />
@@ -207,9 +208,7 @@
 
         <a
           class="location-section__button"
-          href="https://2gis.ru/geo/56.159285,57.954053"
-          data-desktop-href="https://2gis.ru/geo/56.159285,57.954053"
-          data-mobile-href="geo:57.954053,56.159285?q=57.954053,56.159285(%D0%91%D0%B0%D0%BD%D0%BA%D0%B5%D1%82%D0%BD%D1%8B%D0%B9%20%D0%B7%D0%B0%D0%BB%20%D0%AD%D0%BD%D0%B5%D1%80%D0%B3%D0%B8%D1%8F%20%D0%9B%D0%B5%D1%81%D0%B0)"
+          href="https://go.2gis.com/kLOgR"
           target="_blank"
           rel="noopener"
         >
@@ -236,12 +235,26 @@
           <span class="palette__color palette__color--green"></span>
         </div>
       </section>
+
+      <section class="wishes-section section-panel" id="wishes">
+        <div class="section-copy wishes-section__copy">
+          <h1 class="texture-title">Ваши пожелания</h1>
+          <p class="section-lead">Мы будем рады, если вы поделитесь своими предпочтениями по напиткам, заполнив небольшую форму.</p>
+        </div>
+
+        <form class="guest-form" id="guest-form">
+          <div class="guest-form__fields">
+            <input class="guest-form__control" name="name" type="text" placeholder="Ваше имя" autocomplete="name" required />
+            <input class="guest-form__control" name="drinks" type="text" placeholder="Предпочтения по напиткам" required />
+          </div>
+          <button class="guest-form__submit" type="submit">Отправить ответ</button>
+        </form>
+      </section>
     </main>
 
     <script>
       const hero = document.querySelector(".hero");
       const siteBlurTop = document.querySelector(".site__blur-top");
-      const siteBlurBottom = document.querySelector(".site__blur-bottom");
       const heroBlur = document.querySelector(".hero__blur");
       const heroNav = document.querySelector(".hero__nav");
       const heroTitle = document.querySelector(".hero__title");
@@ -258,6 +271,9 @@
       const locationCopy = document.querySelector(".location-section__copy");
       const locationTitle = document.querySelector(".location-section__copy .texture-title");
       const locationButton = document.querySelector(".location-section__button");
+      const eveningProgram = document.querySelector(".evening-program");
+      const eveningSlider = document.querySelector(".evening-program__content");
+      const guestForm = document.getElementById("guest-form");
       const selectedDayPicture = document.querySelector(".calendar .is-selected picture");
       const selectedDayCopy = document.querySelector(".calendar__selected-day-copy");
       const site = document.querySelector(".site");
@@ -265,6 +281,7 @@
       const minHeroHeight = 60;
       const navHideHeight = 300;
       const navFadeDistance = 60;
+      const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQB_AVFuXrDhmCkzZAaO95NelLOgTBFsa3n5BIgzv1pyQYrrf-swNnONj6Cy5QMKxuaA/exec";
       let maxTitleSize = 100;
       let minTitleSize = 50;
       let maxNavSize = 16;
@@ -350,7 +367,8 @@
         const sectionRect = locationSection.getBoundingClientRect();
         const titleRect = locationTitle.getBoundingClientRect();
         const showLine = viewportHeight * 0.48 + 30;
-        const shouldShow = titleRect.bottom <= showLine && sectionRect.top < viewportHeight && sectionRect.bottom > 60;
+        const locationButtonOffset = window.innerWidth < 800 ? 40 : 60;
+        const shouldShow = titleRect.bottom <= showLine && sectionRect.top < viewportHeight && sectionRect.bottom > locationButtonOffset;
         const shouldPin = shouldShow && sectionRect.bottom <= viewportHeight;
         locationButton.classList.toggle("is-visible", shouldShow);
         locationButton.classList.toggle("is-pinned", shouldPin);
@@ -361,21 +379,90 @@
           return;
         }
 
-        const isMobileWidth = window.innerWidth < 800;
-        const targetHref = isMobileWidth ? locationButton.dataset.mobileHref : locationButton.dataset.desktopHref;
+        locationButton.href = "https://go.2gis.com/kLOgR";
+        locationButton.target = "_blank";
+        locationButton.rel = "noopener";
+      };
 
-        if (targetHref) {
-          locationButton.href = targetHref;
-        }
-
-        if (isMobileWidth) {
-          locationButton.removeAttribute("target");
-          locationButton.removeAttribute("rel");
+      const updateEveningSlider = () => {
+        if (!eveningProgram || !eveningSlider) {
           return;
         }
 
-        locationButton.target = "_blank";
-        locationButton.rel = "noopener";
+        if (window.innerWidth > 649.98) {
+          eveningProgram.style.removeProperty("--evening-slider-scroll");
+          eveningProgram.style.removeProperty("--evening-slider-end-progress");
+          eveningProgram.classList.remove("is-slider-end");
+          return;
+        }
+
+        const maxScroll = Math.max(eveningSlider.scrollWidth - eveningSlider.clientWidth, 0);
+        const scrollLeft = eveningSlider.scrollLeft;
+        const endProgress = maxScroll > 0 ? Math.min(Math.max(scrollLeft / maxScroll, 0), 1) : 0;
+        eveningProgram.style.setProperty("--evening-slider-scroll", `${scrollLeft}px`);
+        eveningProgram.style.setProperty("--evening-slider-end-progress", String(endProgress));
+        eveningProgram.classList.toggle("is-slider-end", maxScroll > 0 && maxScroll - scrollLeft <= 2);
+      };
+
+      const setupGuestForm = () => {
+        if (!guestForm) {
+          return;
+        }
+
+        const submitButton = guestForm.querySelector(".guest-form__submit");
+        const defaultSubmitText = submitButton ? submitButton.textContent : "";
+        const formControls = guestForm.querySelectorAll(".guest-form__control");
+
+        const updateControlState = (control) => {
+          control.classList.toggle("has-value", control.value.trim().length > 0);
+        };
+
+        formControls.forEach((control) => {
+          updateControlState(control);
+          control.addEventListener("input", () => {
+            updateControlState(control);
+
+            if (submitButton && submitButton.classList.contains("is-sent")) {
+              submitButton.classList.remove("is-sent");
+              submitButton.textContent = defaultSubmitText;
+            }
+          });
+        });
+
+        guestForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.classList.remove("is-sent");
+            submitButton.textContent = defaultSubmitText;
+          }
+
+          try {
+            const body = new URLSearchParams();
+            body.append("name", guestForm.elements.name.value.trim());
+            body.append("drinks", guestForm.elements.drinks.value.trim());
+
+            await fetch(WEB_APP_URL, {
+              method: "POST",
+              body,
+            });
+
+            guestForm.reset();
+            formControls.forEach(updateControlState);
+
+            if (submitButton) {
+              submitButton.classList.add("is-sent");
+              submitButton.textContent = "Отправлено";
+            }
+          } catch (error) {
+            alert("Не получилось отправить. Попробуйте еще раз.");
+          } finally {
+            if (submitButton) {
+              submitButton.disabled = false;
+            }
+          }
+        });
       };
 
       const updateHeroMetrics = () => {
@@ -434,10 +521,6 @@
             siteBlurTop.removeAttribute("style");
           }
 
-          if (siteBlurBottom) {
-            siteBlurBottom.removeAttribute("style");
-          }
-
           if (heroTopCompensation) {
             heroTopCompensation.removeAttribute("style");
           }
@@ -490,11 +573,6 @@
         if (heroHeight !== lastHeroHeight) {
           hero.style.height = `${heroHeight}px`;
           hero.style.zIndex = "1";
-          if (siteBlurBottom) {
-            const heroShrinkY = viewportHeight - heroHeight;
-            siteBlurBottom.style.height = `${heroHeight}px`;
-            siteBlurBottom.style.setProperty("--hero-shrink-y", `${heroShrinkY}px`);
-          }
           lastHeroHeight = heroHeight;
         }
 
@@ -599,6 +677,41 @@
         }
       };
 
+      const preventMobileZoom = () => {
+        let lastTouchEnd = 0;
+
+        const preventGesture = (event) => {
+          event.preventDefault();
+        };
+
+        document.addEventListener("gesturestart", preventGesture, { passive: false });
+        document.addEventListener("gesturechange", preventGesture, { passive: false });
+        document.addEventListener("gestureend", preventGesture, { passive: false });
+        document.addEventListener(
+          "touchmove",
+          (event) => {
+            if (event.touches.length > 1) {
+              event.preventDefault();
+            }
+          },
+          { passive: false }
+        );
+        document.addEventListener(
+          "touchend",
+          (event) => {
+            const now = Date.now();
+
+            if (now - lastTouchEnd <= 300) {
+              event.preventDefault();
+            }
+
+            lastTouchEnd = now;
+          },
+          { passive: false }
+        );
+      };
+
+      preventMobileZoom();
       window.addEventListener("scroll", requestHeroFrame, { passive: true });
       window.addEventListener("resize", () => {
         updateSiteScale();
@@ -608,8 +721,12 @@
         updateMobileDatePan();
         updateLocationButton();
         updateLocationMapHref();
+        updateEveningSlider();
         requestHeroFrame();
       });
+      if (eveningSlider) {
+        eveningSlider.addEventListener("scroll", updateEveningSlider, { passive: true });
+      }
       if (siteHeaderBrand) {
         siteHeaderBrand.addEventListener("click", (event) => {
           event.preventDefault();
@@ -619,6 +736,8 @@
       updateSiteScale();
       updateHeroMetrics();
       updateLocationMapHref();
+      updateEveningSlider();
+      setupGuestForm();
       renderHeroState();
     </script>
   </body>
