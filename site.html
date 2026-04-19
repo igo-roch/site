@@ -741,6 +741,7 @@
 
         if (isMobileWidth) {
           const scrollY = window.scrollY;
+          const frame = getMobileHeroFrame(scrollY);
 
           if (!mobileHeroStylesReset) {
             hero.removeAttribute("style");
@@ -768,8 +769,7 @@
             }
 
             if (heroTitleFull) {
-              heroTitleFull.style.opacity = "";
-              heroTitleFull.style.transform = "";
+              heroTitleFull.style.opacity = "1";
             }
 
             if (heroDate) {
@@ -780,9 +780,23 @@
             mobileHeroStylesReset = true;
           }
 
-          const heroRect = hero.getBoundingClientRect();
-          updateHeroVideoState(heroRect.bottom > 0 && heroRect.top < window.innerHeight);
-          updateMobileHeader(Math.min(scrollY / 160, 1));
+          if (frame.heroHeight !== lastMobileHeroHeight) {
+            hero.style.height = `${frame.heroHeight}px`;
+            lastMobileHeroHeight = frame.heroHeight;
+          }
+
+          if (frame.heroTransform !== lastMobileHeroTransform) {
+            hero.style.transform = frame.heroTransform;
+            lastMobileHeroTransform = frame.heroTransform;
+          }
+
+          if (heroTitleFull && frame.titleFullTransform !== lastMobileTitleFullTransform) {
+            heroTitleFull.style.transform = frame.titleFullTransform;
+            lastMobileTitleFullTransform = frame.titleFullTransform;
+          }
+
+          updateHeroVideoState(frame.heroVideoVisible);
+          updateMobileHeader(frame.shrinkProgress);
           requestSecondaryScrollFrame(scrollY);
 
           lastRenderedScrollY = window.scrollY;
