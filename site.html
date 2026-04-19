@@ -19,8 +19,10 @@
       ></video>
 
       <img class="site__blur-top-mob" src="./assets/blur%20top%20mob.png" alt="" aria-hidden="true" />
+      <img class="site__blur-bottom-mob" src="./assets/blur%20bottom.png" alt="" aria-hidden="true" />
 
       <section class="hero" id="home" aria-label="Главный экран">
+        <img class="hero__blur-bottom" src="./assets/blur%20bottom.png" alt="" aria-hidden="true" />
         <div class="hero__blur" aria-hidden="true">
           <div class="hero__blur-bg"></div>
         </div>
@@ -77,7 +79,6 @@
       <div class="hero-flow-spacer" aria-hidden="true"></div>
 
       <section class="story section-panel" id="story">
-        <img class="story__blur-bottom" src="./assets/blur%20bottom.png" alt="" aria-hidden="true" />
         <div class="section-copy">
           <h1 class="texture-title">История любви</h1>
           <div class="section-text">
@@ -275,6 +276,7 @@
       const heroTitleFull = document.querySelector(".hero__title-full");
       const heroTitleShort = document.querySelector(".hero__title-short");
       const heroTopCompensation = document.querySelector(".hero__top-compensation");
+      const siteBlurBottomMob = document.querySelector(".site__blur-bottom-mob");
       const mobileHeader = document.querySelector(".mobile-header");
       const mobileMenuTrigger = document.querySelector(".mobile-menu-trigger");
       const mobileMenu = document.querySelector(".mobile-menu");
@@ -340,6 +342,7 @@
       let lastMobileHeroTransform = null;
       let lastMobileTitleFullTransform = null;
       let lastMobileHeroVideoVisible = null;
+      let lastMobileBlurBottomScrollY = null;
       let lastMobileSecondaryScrollY = null;
       let datePanStartY = 0;
       let datePanEndY = 0;
@@ -638,6 +641,26 @@
         return mobileHeroFrames[index];
       };
 
+      const updateMobileBlurBottom = (scrollY = window.scrollY) => {
+        if (!siteBlurBottomMob || window.innerWidth >= 1200) {
+          if (siteBlurBottomMob) {
+            siteBlurBottomMob.style.removeProperty("--site-blur-bottom-scroll-y");
+          }
+          lastMobileBlurBottomScrollY = null;
+          return;
+        }
+
+        const videoHeight = 600;
+        const holdDistance = Math.max((viewportHeight - videoHeight) / 2, 0);
+        const scrollYAfterTouch = Math.max(scrollY - holdDistance, 0);
+        const blurScrollY = -Math.round(scrollYAfterTouch);
+
+        if (blurScrollY !== lastMobileBlurBottomScrollY) {
+          siteBlurBottomMob.style.setProperty("--site-blur-bottom-scroll-y", `${blurScrollY}px`);
+          lastMobileBlurBottomScrollY = blurScrollY;
+        }
+      };
+
       const setupGuestForm = () => {
         if (!guestForm) {
           return;
@@ -738,9 +761,9 @@
 
         if (isMobileWidth) {
           const scrollY = window.scrollY;
-          const frame = getMobileHeroFrame(scrollY);
 
           if (!mobileHeroStylesReset) {
+            hero.removeAttribute("style");
             hero.style.paddingTop = "";
             hero.style.paddingBottom = "";
 
@@ -766,6 +789,7 @@
 
             if (heroTitleFull) {
               heroTitleFull.style.opacity = "";
+              heroTitleFull.style.transform = "";
             }
 
             if (heroDate) {
@@ -776,28 +800,10 @@
             mobileHeroStylesReset = true;
           }
 
-          if (frame.heroHeight !== lastMobileHeroHeight) {
-            hero.style.height = `${frame.heroHeight}px`;
-            lastMobileHeroHeight = frame.heroHeight;
-          }
-
-          if (frame.heroTransform !== lastMobileHeroTransform) {
-            hero.style.transform = frame.heroTransform;
-            lastMobileHeroTransform = frame.heroTransform;
-          }
-
-          if (heroTitleFull) {
-            if (frame.titleFullTransform !== lastMobileTitleFullTransform) {
-              heroTitleFull.style.transform = frame.titleFullTransform;
-              lastMobileTitleFullTransform = frame.titleFullTransform;
-            }
-          }
-
-          if (frame.heroVideoVisible !== lastMobileHeroVideoVisible) {
-            updateHeroVideoState(frame.heroVideoVisible);
-            lastMobileHeroVideoVisible = frame.heroVideoVisible;
-          }
-          updateMobileHeader(frame.shrinkProgress);
+          const heroRect = hero.getBoundingClientRect();
+          updateHeroVideoState(heroRect.bottom > 0 && heroRect.top < window.innerHeight);
+          updateMobileHeader(0);
+          updateMobileBlurBottom(scrollY);
 
           requestSecondaryScrollFrame(scrollY);
 
@@ -811,7 +817,9 @@
         lastMobileHeroTransform = null;
         lastMobileTitleFullTransform = null;
         lastMobileHeroVideoVisible = null;
+        lastMobileBlurBottomScrollY = null;
         lastMobileSecondaryScrollY = null;
+        updateMobileBlurBottom(scrollY);
         const effectiveMinHeroHeight = window.innerWidth < 800 ? 120 : minHeroHeight;
         const effectiveShrinkDistance = Math.max(viewportHeight - effectiveMinHeroHeight, 0);
         const heroHeight = Math.max(viewportHeight - Math.min(scrollY, effectiveShrinkDistance), effectiveMinHeroHeight);

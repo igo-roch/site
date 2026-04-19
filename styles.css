@@ -215,17 +215,21 @@ h2 {
   white-space: nowrap;
 }
 
-.story__blur-bottom {
+.site__blur-bottom-mob {
+  display: none;
+  max-width: none;
+}
+
+.hero__blur-bottom {
   position: absolute;
   z-index: 1;
   left: 50%;
-  top: -589px;
+  bottom: 0;
   width: 4375px;
   height: auto;
   max-width: none;
   pointer-events: none;
-  -webkit-transform: translate3d(-50%, 0, 0);
-  transform: translate3d(-50%, 0, 0);
+  transform: translateX(-50%);
 }
 
 .hero__blur {
@@ -1298,7 +1302,8 @@ h2 {
   .hero__nav,
   .hero__date,
   .site__blur-top-mob,
-  .story__blur-bottom,
+  .site__blur-bottom-mob,
+  .hero__blur-bottom,
   .hero__blur,
   .site__video {
     transition: none;
@@ -1311,9 +1316,9 @@ h2 {
   }
 
   .hero {
-    position: fixed;
+    position: relative;
     z-index: 20;
-    inset: 0 0 auto;
+    inset: auto;
     height: var(--viewport-height);
     max-height: var(--viewport-height);
     min-height: 0;
@@ -1323,8 +1328,7 @@ h2 {
   }
 
   .hero-flow-spacer {
-    display: block;
-    height: var(--hero-flow-offset);
+    display: none;
   }
 
   .site__video {
@@ -1339,10 +1343,22 @@ h2 {
     transform: translate(-50%, -50%);
   }
 
-  .story__blur-bottom {
+  .site__blur-bottom-mob {
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    top: calc((var(--viewport-height) + 600px) / 2 - 589px);
     display: block;
-    top: -589px;
     width: 4375px;
+    height: auto;
+    max-width: none;
+    pointer-events: none;
+    -webkit-transform: translate3d(-50%, var(--site-blur-bottom-scroll-y, 0px), 0);
+    transform: translate3d(-50%, var(--site-blur-bottom-scroll-y, 0px), 0);
+  }
+
+  .hero__blur-bottom {
+    display: none;
   }
 
   .hero__blur {
@@ -1365,7 +1381,7 @@ h2 {
     margin-top: 0;
     height: auto;
     overflow: visible;
-    padding-top: 182px;
+    padding-top: var(--padding-vertical);
   }
 
   .schedule,
@@ -1571,19 +1587,13 @@ h2 {
     filter: none;
   }
 
-  .is-mobile-hero-scrolling .hero__title-full {
-    background-image: none;
-    color: var(--gold);
-    -webkit-text-fill-color: var(--gold);
-  }
-
   .hero__date {
     max-height: calc(var(--date-font-size) * 1.4);
   }
 
   @media (max-width: 799.98px) {
     .site__blur-top-mob {
-      position: fixed;
+      position: absolute;
       z-index: 1;
       left: 50%;
       top: calc((var(--viewport-height) - 600px) / 2);
