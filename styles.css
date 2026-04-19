@@ -315,7 +315,7 @@ h2 {
 
 .site-header {
   position: fixed;
-  z-index: 4;
+  z-index: 30;
   top: 0;
   left: 0;
   right: 0;
@@ -340,7 +340,7 @@ h2 {
 }
 
 .site-header::before {
-  content: "";
+  content: none;
   position: absolute;
   z-index: 0;
   left: 50%;
