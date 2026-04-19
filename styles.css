@@ -148,12 +148,12 @@ h2 {
 
 .hero {
   position: fixed;
-  z-index: 20;
+  z-index: 3;
   inset: 0 0 auto;
   width: 100%;
   height: var(--viewport-height);
   max-height: var(--viewport-height);
-  min-height: 50px;
+  min-height: 0;
   padding: 40px var(--padding-horizontal);
   display: flex;
   flex-direction: column;
@@ -218,6 +218,10 @@ h2 {
 .site__blur-bottom-mob {
   display: none;
   max-width: none;
+}
+
+.story__mobile-video-fill {
+  display: none;
 }
 
 .hero__blur-bottom {
@@ -315,7 +319,7 @@ h2 {
 
 .site-header {
   position: fixed;
-  z-index: 30;
+  z-index: 4;
   top: 0;
   left: 0;
   right: 0;
@@ -340,7 +344,7 @@ h2 {
 }
 
 .site-header::before {
-  content: none;
+  content: "";
   position: absolute;
   z-index: 0;
   left: 50%;
@@ -400,7 +404,7 @@ h2 {
 
 .section-panel {
   position: relative;
-  z-index: 3;
+  z-index: 2;
   padding: var(--padding-vertical) var(--padding-horizontal);
   display: flex;
   flex-direction: column;
@@ -1344,17 +1348,29 @@ h2 {
   }
 
   .site__blur-bottom-mob {
-    position: fixed;
+    position: absolute;
     z-index: 1;
     left: 50%;
-    top: calc((var(--viewport-height) + 600px) / 2 - 589px);
+    top: calc(-1 * (((var(--viewport-height) - 600px) / 2) + 589px));
     display: block;
     width: 4375px;
     height: auto;
     max-width: none;
     pointer-events: none;
-    -webkit-transform: translate3d(-50%, var(--site-blur-bottom-scroll-y, 0px), 0);
-    transform: translate3d(-50%, var(--site-blur-bottom-scroll-y, 0px), 0);
+    -webkit-transform: translate3d(-50%, 0, 0);
+    transform: translate3d(-50%, 0, 0);
+  }
+
+  .story__mobile-video-fill {
+    position: absolute;
+    z-index: 0;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    display: block;
+    height: max(0px, calc((var(--viewport-height) - 600px) / 2 + 2px));
+    background: var(--page-bg);
+    pointer-events: none;
   }
 
   .hero__blur-bottom {
@@ -1593,7 +1609,7 @@ h2 {
 
   @media (max-width: 799.98px) {
     .site__blur-top-mob {
-      position: absolute;
+      position: fixed;
       z-index: 1;
       left: 50%;
       top: calc((var(--viewport-height) - 600px) / 2);
