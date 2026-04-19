@@ -71,7 +71,6 @@
   --hero-title-mask: url("./assets/figma/hero-title-mask.svg");
   --viewport-height: 100vh;
   --hero-flow-offset: 100vh;
-  --hero-clip-bottom: 0px;
   --padding-horizontal: 100px;
   --padding-vertical: 120px;
   --Main-title-font-size: 100px;
@@ -161,9 +160,8 @@ h2 {
   align-items: center;
   justify-content: space-between;
   overflow: hidden;
-  clip-path: inset(0 0 var(--hero-clip-bottom, 0px) 0);
   transform: translateZ(0);
-  will-change: transform, clip-path, padding, opacity;
+  will-change: height, padding, opacity;
 }
 
 .hero-flow-spacer {
@@ -398,7 +396,6 @@ h2 {
 .section-panel {
   position: relative;
   z-index: 3;
-  contain: layout style;
   padding: var(--padding-vertical) var(--padding-horizontal);
   display: flex;
   flex-direction: column;
@@ -1562,10 +1559,6 @@ h2 {
   .hero__title {
     font-size: var(--Main-title-font-size);
     filter: drop-shadow(0.5px 0.5px 0 var(--white));
-  }
-
-  .is-mobile-hero-scrolling .hero__title {
-    filter: none;
   }
 
   .hero__date {

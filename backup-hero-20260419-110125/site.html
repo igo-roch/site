@@ -312,8 +312,6 @@
       let viewportHeight = window.innerHeight;
       let shrinkDistance = Math.max(viewportHeight - minHeroHeight, 0);
       let animationFrame = null;
-      let secondaryScrollFrame = null;
-      let scrollIdleTimer = null;
       let lastFrameTime = 0;
       let lastRenderedScrollY = -1;
       let lastHeroHeight = null;
@@ -336,7 +334,6 @@
       let lastMobileHeaderPaddingTop = null;
       let mobileHeroStylesReset = false;
       let lastMobileHeroHeight = null;
-      let lastMobileHeroClipBottom = null;
       let lastMobileHeroPaddingY = null;
       let lastMobileHeroTransform = null;
       let lastMobileBlurLockY = null;
@@ -344,9 +341,7 @@
       let lastMobileTitleFullTransform = null;
       let lastMobileDateOpacity = null;
       let lastMobileDateVisibility = null;
-      let lastMobileDateTransform = null;
       let lastMobileHeroVideoVisible = null;
-      let lastMobileSecondaryScrollY = null;
       let datePanStartY = 0;
       let datePanEndY = 0;
       let locationButtonStartY = 0;
@@ -576,40 +571,6 @@
         eveningSlider.classList.remove("is-horizontal-gesture", "is-vertical-gesture");
       };
 
-      const updateSecondaryScrollState = (scrollY = window.scrollY) => {
-        if (window.innerWidth < 1200 && scrollY === lastMobileSecondaryScrollY) {
-          return;
-        }
-
-        lastMobileSecondaryScrollY = window.innerWidth < 1200 ? scrollY : null;
-
-        if (scrollY >= datePanStartY && scrollY <= datePanEndY) {
-          updateMobileDatePan();
-        }
-
-        if (scrollY >= locationButtonStartY && scrollY <= locationButtonEndY) {
-          updateLocationButton();
-        } else if (locationButton && locationButton.classList.contains("is-visible")) {
-          updateLocationButton();
-        }
-      };
-
-      const requestSecondaryScrollFrame = (scrollY = window.scrollY) => {
-        if (window.innerWidth >= 1200) {
-          updateSecondaryScrollState(scrollY);
-          return;
-        }
-
-        if (secondaryScrollFrame !== null) {
-          return;
-        }
-
-        secondaryScrollFrame = requestAnimationFrame(() => {
-          secondaryScrollFrame = null;
-          updateSecondaryScrollState(window.scrollY);
-        });
-      };
-
       const setupGuestForm = () => {
         if (!guestForm) {
           return;
@@ -712,17 +673,12 @@
           const heroExitY = Math.round(-Math.max(scrollY - mobileShrinkDistance, 0));
           const exitProgress = Math.min(Math.max((scrollY - mobileShrinkDistance) / minMobileHeroHeight, 0), 1);
           const titleScale = Number((1 - 0.28 * shrinkProgress).toFixed(4));
-          const titleLayoutTranslateY = Math.round((heroHeight - viewportHeight) / 2);
-          const titleExitTranslateY = Math.round(-minMobileHeroHeight * exitProgress);
-          const titleTranslateY = titleLayoutTranslateY + titleExitTranslateY;
-          const dateTranslateY = Math.round(viewportHeight - heroHeight);
+          const titleTranslateY = Math.round(-minMobileHeroHeight * exitProgress);
           const titleFullOpacity = Number((1 - exitProgress).toFixed(3));
           const dateOpacity = Number((1 - shrinkProgress).toFixed(3));
           const videoHeight = 600;
           const blurLockDistance = Math.max((viewportHeight - videoHeight) / 2, 0);
           const blurLockY = Math.round(Math.min(scrollY, blurLockDistance));
-          const heroClipBottom = Math.round(Math.max(viewportHeight - heroHeight, 0));
-          const blurOffsetY = blurLockY - heroClipBottom;
           const heroPaddingY = Math.round(40 * (1 - shrinkProgress));
           const heroTransform = `translateY(${heroExitY}px)`;
           const titleFullTransform = `translateY(${titleTranslateY}px) scale(${titleScale})`;
@@ -752,14 +708,9 @@
             mobileHeroStylesReset = true;
           }
 
-          if (heroClipBottom !== lastMobileHeroClipBottom) {
-            hero.style.setProperty("--hero-clip-bottom", `${heroClipBottom}px`);
-            lastMobileHeroClipBottom = heroClipBottom;
-          }
-
-          if (lastMobileHeroHeight !== viewportHeight) {
-            hero.style.height = `${viewportHeight}px`;
-            lastMobileHeroHeight = viewportHeight;
+          if (heroHeight !== lastMobileHeroHeight) {
+            hero.style.height = `${heroHeight}px`;
+            lastMobileHeroHeight = heroHeight;
           }
 
           if (heroPaddingY !== lastMobileHeroPaddingY) {
@@ -773,9 +724,9 @@
             lastMobileHeroTransform = heroTransform;
           }
 
-          if (blurOffsetY !== lastMobileBlurLockY) {
-            heroBlurBottom?.style.setProperty("--hero-blur-bottom-lock-y", `${blurOffsetY}px`);
-            lastMobileBlurLockY = blurOffsetY;
+          if (blurLockY !== lastMobileBlurLockY) {
+            heroBlurBottom?.style.setProperty("--hero-blur-bottom-lock-y", `${blurLockY}px`);
+            lastMobileBlurLockY = blurLockY;
           }
 
           if (heroTitleFull) {
@@ -791,11 +742,6 @@
           }
 
           if (heroDate) {
-            if (dateTranslateY !== lastMobileDateTransform) {
-              heroDate.style.transform = `translateY(${-dateTranslateY}px)`;
-              lastMobileDateTransform = dateTranslateY;
-            }
-
             if (dateOpacity !== lastMobileDateOpacity) {
               heroDate.style.opacity = String(dateOpacity);
               lastMobileDateOpacity = dateOpacity;
@@ -814,7 +760,15 @@
           }
           updateMobileHeader(shrinkProgress);
 
-          requestSecondaryScrollFrame(scrollY);
+          if (scrollY >= datePanStartY && scrollY <= datePanEndY) {
+            updateMobileDatePan();
+          }
+
+          if (scrollY >= locationButtonStartY && scrollY <= locationButtonEndY) {
+            updateLocationButton();
+          } else if (locationButton && locationButton.classList.contains("is-visible")) {
+            updateLocationButton();
+          }
 
           lastRenderedScrollY = window.scrollY;
           return;
@@ -823,7 +777,6 @@
         const scrollY = window.scrollY;
         mobileHeroStylesReset = false;
         lastMobileHeroHeight = null;
-        lastMobileHeroClipBottom = null;
         lastMobileHeroPaddingY = null;
         lastMobileHeroTransform = null;
         lastMobileBlurLockY = null;
@@ -831,10 +784,7 @@
         lastMobileTitleFullTransform = null;
         lastMobileDateOpacity = null;
         lastMobileDateVisibility = null;
-        lastMobileDateTransform = null;
         lastMobileHeroVideoVisible = null;
-        lastMobileSecondaryScrollY = null;
-        hero.style.removeProperty("--hero-clip-bottom");
         heroBlurBottom?.style.removeProperty("--hero-blur-bottom-lock-y");
         const effectiveMinHeroHeight = window.innerWidth < 800 ? 120 : minHeroHeight;
         const effectiveShrinkDistance = Math.max(viewportHeight - effectiveMinHeroHeight, 0);
@@ -950,12 +900,6 @@
 
       const requestHeroFrame = () => {
         if (window.innerWidth < 1200) {
-          root.classList.add("is-mobile-hero-scrolling");
-          window.clearTimeout(scrollIdleTimer);
-          scrollIdleTimer = window.setTimeout(() => {
-            root.classList.remove("is-mobile-hero-scrolling");
-          }, 120);
-
           if (animationFrame !== null) {
             cancelAnimationFrame(animationFrame);
             animationFrame = null;
