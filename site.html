@@ -304,6 +304,7 @@
       let minTitleSize = 50;
       let maxNavSize = 16;
       const minNavSize = 10;
+      const mobileHeroFrameStep = 4;
       let maxHeroPaddingTop = 40;
       let maxHeroPaddingBottom = 40;
       let dateHeight = 43;
@@ -334,6 +335,7 @@
       let lastHeroVideoOpacity = null;
       let lastMobileHeaderPaddingTop = null;
       let mobileHeroStylesReset = false;
+      let mobileHeroFrames = [];
       let lastMobileHeroHeight = null;
       let lastMobileHeroTransform = null;
       let lastMobileTitleFullOpacity = null;
@@ -605,6 +607,45 @@
         });
       };
 
+      const buildMobileHeroFrames = () => {
+        const minMobileHeroHeight = 120;
+        const mobileShrinkDistance = Math.max(viewportHeight - minMobileHeroHeight, 1);
+        const maxScroll = Math.ceil(mobileShrinkDistance + minMobileHeroHeight);
+        const frameCount = Math.ceil(maxScroll / mobileHeroFrameStep) + 2;
+
+        mobileHeroFrames = Array.from({ length: frameCount }, (_, index) => {
+          const scrollY = Math.min(index * mobileHeroFrameStep, maxScroll);
+          const shrinkProgress = Math.min(Math.max(scrollY / mobileShrinkDistance, 0), 1);
+          const heroHeight = Math.round(Math.max(viewportHeight - Math.min(scrollY, mobileShrinkDistance), minMobileHeroHeight));
+          const heroExitY = Math.round(-Math.max(scrollY - mobileShrinkDistance, 0));
+          const exitProgress = Math.min(Math.max((scrollY - mobileShrinkDistance) / minMobileHeroHeight, 0), 1);
+          const titleScale = Number((1 - 0.28 * shrinkProgress).toFixed(4));
+          const titleTranslateY = Math.round(-minMobileHeroHeight * exitProgress);
+          const titleFullOpacity = Number((1 - exitProgress).toFixed(3));
+          const dateOpacity = Number((1 - shrinkProgress).toFixed(3));
+
+          return {
+            dateOpacity,
+            dateVisibility: dateOpacity <= 0 ? "hidden" : "visible",
+            heroHeight,
+            heroTransform: `translateY(${heroExitY}px)`,
+            heroVideoVisible: heroHeight + heroExitY > 0,
+            shrinkProgress,
+            titleFullOpacity,
+            titleFullTransform: `translateY(${titleTranslateY}px) scale(${titleScale})`,
+          };
+        });
+      };
+
+      const getMobileHeroFrame = (scrollY) => {
+        if (mobileHeroFrames.length === 0) {
+          buildMobileHeroFrames();
+        }
+
+        const index = Math.min(Math.floor(scrollY / mobileHeroFrameStep), mobileHeroFrames.length - 1);
+        return mobileHeroFrames[index];
+      };
+
       const setupGuestForm = () => {
         if (!guestForm) {
           return;
@@ -679,6 +720,11 @@
         dateHeight = isMobileWidth ? 28 : 45;
         shrinkDistance = Math.max(viewportHeight - minHeroHeight, 0);
         root.style.setProperty("--hero-flow-offset", `${isMobileWidth ? (viewportHeight + 600) / 2 : viewportHeight}px`);
+        mobileHeroFrames = [];
+
+        if (isMobileWidth) {
+          buildMobileHeroFrames();
+        }
 
         if (dateSection) {
           datePanStartY = Math.max(dateSection.offsetTop - viewportHeight, 0);
@@ -700,19 +746,7 @@
 
         if (isMobileWidth) {
           const scrollY = window.scrollY;
-          const minMobileHeroHeight = 120;
-          const mobileShrinkDistance = Math.max(viewportHeight - minMobileHeroHeight, 1);
-          const shrinkProgress = Math.min(Math.max(scrollY / mobileShrinkDistance, 0), 1);
-          const heroHeight = Math.round(Math.max(viewportHeight - Math.min(scrollY, mobileShrinkDistance), minMobileHeroHeight));
-          const heroExitY = Math.round(-Math.max(scrollY - mobileShrinkDistance, 0));
-          const exitProgress = Math.min(Math.max((scrollY - mobileShrinkDistance) / minMobileHeroHeight, 0), 1);
-          const titleScale = Number((1 - 0.28 * shrinkProgress).toFixed(4));
-          const titleTranslateY = Math.round(-minMobileHeroHeight * exitProgress);
-          const titleFullOpacity = Number((1 - exitProgress).toFixed(3));
-          const dateOpacity = Number((1 - shrinkProgress).toFixed(3));
-          const heroTransform = `translateY(${heroExitY}px)`;
-          const titleFullTransform = `translateY(${titleTranslateY}px) scale(${titleScale})`;
-          const dateVisibility = dateOpacity <= 0 ? "hidden" : "visible";
+          const frame = getMobileHeroFrame(scrollY);
 
           if (!mobileHeroStylesReset) {
             hero.style.paddingTop = "";
@@ -741,46 +775,45 @@
             mobileHeroStylesReset = true;
           }
 
-          if (heroHeight !== lastMobileHeroHeight) {
-            hero.style.height = `${heroHeight}px`;
-            lastMobileHeroHeight = heroHeight;
+          if (frame.heroHeight !== lastMobileHeroHeight) {
+            hero.style.height = `${frame.heroHeight}px`;
+            lastMobileHeroHeight = frame.heroHeight;
           }
 
-          if (heroTransform !== lastMobileHeroTransform) {
-            hero.style.transform = heroTransform;
-            lastMobileHeroTransform = heroTransform;
+          if (frame.heroTransform !== lastMobileHeroTransform) {
+            hero.style.transform = frame.heroTransform;
+            lastMobileHeroTransform = frame.heroTransform;
           }
 
           if (heroTitleFull) {
-            if (titleFullOpacity !== lastMobileTitleFullOpacity) {
-              heroTitleFull.style.opacity = String(titleFullOpacity);
-              lastMobileTitleFullOpacity = titleFullOpacity;
+            if (frame.titleFullOpacity !== lastMobileTitleFullOpacity) {
+              heroTitleFull.style.opacity = String(frame.titleFullOpacity);
+              lastMobileTitleFullOpacity = frame.titleFullOpacity;
             }
 
-            if (titleFullTransform !== lastMobileTitleFullTransform) {
-              heroTitleFull.style.transform = titleFullTransform;
-              lastMobileTitleFullTransform = titleFullTransform;
+            if (frame.titleFullTransform !== lastMobileTitleFullTransform) {
+              heroTitleFull.style.transform = frame.titleFullTransform;
+              lastMobileTitleFullTransform = frame.titleFullTransform;
             }
           }
 
           if (heroDate) {
-            if (dateOpacity !== lastMobileDateOpacity) {
-              heroDate.style.opacity = String(dateOpacity);
-              lastMobileDateOpacity = dateOpacity;
+            if (frame.dateOpacity !== lastMobileDateOpacity) {
+              heroDate.style.opacity = String(frame.dateOpacity);
+              lastMobileDateOpacity = frame.dateOpacity;
             }
 
-            if (dateVisibility !== lastMobileDateVisibility) {
-              heroDate.style.visibility = dateVisibility;
-              lastMobileDateVisibility = dateVisibility;
+            if (frame.dateVisibility !== lastMobileDateVisibility) {
+              heroDate.style.visibility = frame.dateVisibility;
+              lastMobileDateVisibility = frame.dateVisibility;
             }
           }
 
-          const heroVideoVisible = heroHeight + heroExitY > 0;
-          if (heroVideoVisible !== lastMobileHeroVideoVisible) {
-            updateHeroVideoState(heroVideoVisible);
-            lastMobileHeroVideoVisible = heroVideoVisible;
+          if (frame.heroVideoVisible !== lastMobileHeroVideoVisible) {
+            updateHeroVideoState(frame.heroVideoVisible);
+            lastMobileHeroVideoVisible = frame.heroVideoVisible;
           }
-          updateMobileHeader(shrinkProgress);
+          updateMobileHeader(frame.shrinkProgress);
 
           requestSecondaryScrollFrame(scrollY);
 
@@ -823,7 +856,7 @@
 
         if (heroHeight !== lastHeroHeight) {
           hero.style.height = `${heroHeight}px`;
-          hero.style.zIndex = "1";
+          hero.style.zIndex = "20";
           lastHeroHeight = heroHeight;
         }
 

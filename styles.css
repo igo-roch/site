@@ -148,7 +148,7 @@ h2 {
 
 .hero {
   position: fixed;
-  z-index: 3;
+  z-index: 20;
   inset: 0 0 auto;
   width: 100%;
   height: var(--viewport-height);
@@ -224,7 +224,8 @@ h2 {
   height: auto;
   max-width: none;
   pointer-events: none;
-  transform: translateX(-50%);
+  -webkit-transform: translate3d(-50%, 0, 0);
+  transform: translate3d(-50%, 0, 0);
 }
 
 .hero__blur {
@@ -291,7 +292,7 @@ h2 {
 
 .hero__date {
   position: relative;
-  z-index: 2;
+  z-index: 6;
   width: 100%;
   max-height: calc(var(--date-font-size) * 1.4);
   overflow: hidden;
@@ -396,7 +397,6 @@ h2 {
 .section-panel {
   position: relative;
   z-index: 3;
-  contain: layout style;
   padding: var(--padding-vertical) var(--padding-horizontal);
   display: flex;
   flex-direction: column;
@@ -1312,7 +1312,7 @@ h2 {
 
   .hero {
     position: fixed;
-    z-index: 5;
+    z-index: 20;
     inset: 0 0 auto;
     height: var(--viewport-height);
     max-height: var(--viewport-height);
@@ -1364,6 +1364,7 @@ h2 {
     z-index: 3;
     margin-top: 0;
     height: auto;
+    overflow: visible;
     padding-top: 182px;
   }
 
@@ -1582,7 +1583,8 @@ h2 {
       top: calc((var(--viewport-height) - 600px) / 2);
       display: block;
       pointer-events: none;
-      transform: translateX(-50%);
+      -webkit-transform: translate3d(-50%, 0, 0);
+      transform: translate3d(-50%, 0, 0);
     }
   }
 
