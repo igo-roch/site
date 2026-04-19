@@ -73,6 +73,7 @@
   --hero-flow-offset: 100vh;
   --padding-horizontal: 100px;
   --padding-vertical: 120px;
+  --padding-vertical-block-3: 60px;
   --Main-title-font-size: 100px;
   --title-font-size: 80px;
   --title2-font-size: 57px;
@@ -519,8 +520,10 @@ h2 {
 .date-section {
   position: relative;
   z-index: 3;
-  height: max(760px, 100vh);
+  height: auto;
+  min-height: 0;
   margin-top: -120px;
+  padding: var(--padding-vertical-block-3) 0;
   background: transparent;
 }
 
@@ -536,11 +539,10 @@ h2 {
 }
 
 .date-card {
-  position: absolute;
+  position: relative;
   z-index: 1;
-  inset: 0;
-  height: 100%;
-  padding: 160px var(--padding-horizontal);
+  min-height: max(760px, 100vh);
+  padding: var(--padding-vertical) var(--padding-horizontal);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -905,8 +907,61 @@ h2 {
   position: absolute;
 }
 
+.rsvp-deadline {
+  position: relative;
+  z-index: 2;
+  height: auto;
+  min-height: 0;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--white);
+  color: var(--gold);
+  text-align: center;
+}
+
+.rsvp-deadline p {
+  width: 100%;
+  margin: 0;
+  padding: 20px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--cream-bg);
+  font-family: var(--font-body);
+  font-size: var(--inter-font-size);
+  font-weight: 300;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
 .dress-code {
-  height: 1080px;
+  height: auto;
+}
+
+.figma-wishes {
+  height: auto;
+  min-height: 0;
+  gap: 0;
+  background: var(--page-bg);
+}
+
+.figma-wishes__container {
+  max-width: 800px;
+}
+
+.figma-wishes__text {
+  width: 100%;
+  color: var(--gold);
+  font-family: var(--font-body);
+  font-size: var(--inter-font-size);
+  font-weight: 300;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.figma-wishes__text p {
+  margin: 0;
 }
 
 .palette {
@@ -1045,6 +1100,49 @@ h2 {
   opacity: 1;
 }
 
+.questions-section {
+  position: relative;
+  z-index: 2;
+  height: auto;
+  min-height: 0;
+  padding: var(--padding-vertical) var(--padding-horizontal);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  background: var(--green);
+  color: var(--white);
+  text-align: center;
+}
+
+.questions-section__container {
+  width: 100%;
+  max-width: 820px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-title);
+}
+
+.questions-section h1 {
+  width: 100%;
+  margin: 0;
+  font-family: var(--font-title);
+  font-size: var(--title-font-size);
+  font-weight: 700;
+  line-height: 1.17;
+  text-transform: uppercase;
+}
+
+.questions-section p {
+  width: 100%;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--inter-font-size);
+  font-weight: 300;
+  line-height: 1.4;
+}
+
 @media (min-width: 1200px) and (max-width: 1920px) {
   :root {
     --gap-gallery: clamp(20px, calc(20px + (100vw - 1200px) * 0.138889), 120px);
@@ -1081,6 +1179,7 @@ h2 {
   :root {
     --padding-horizontal: 60px;
     --padding-vertical: 120px;
+    --padding-vertical-block-3: 60px;
     --Main-title-font-size: 60px;
     --title-font-size: 60px;
     --title2-font-size: 56px;
@@ -1168,11 +1267,13 @@ h2 {
   }
 
   .date-section {
-    height: 864px;
+    height: auto;
+    min-height: 0;
     margin-top: 0;
   }
 
   .date-card {
+    min-height: 864px;
     padding: var(--padding-vertical) var(--padding-horizontal);
     border-radius: clamp(200px, calc(200px + (100vw - 800px) * 0.501253), 400px);
   }
@@ -1260,7 +1361,7 @@ h2 {
   }
 
   .dress-code {
-    height: 1080px;
+    height: auto;
     padding: var(--padding-vertical) var(--padding-horizontal);
   }
 
@@ -1279,6 +1380,7 @@ h2 {
   :root {
     --padding-horizontal: 20px;
     --padding-vertical: 60px;
+    --padding-vertical-block-3: 0px;
     --Main-title-font-size: 40px;
     --title-font-size: 40px;
     --title2-font-size: 32px;
@@ -1623,7 +1725,8 @@ h2 {
   }
 
   .date-section {
-    height: 553px;
+    height: auto;
+    min-height: 0;
     margin-top: 0;
   }
 
@@ -1632,6 +1735,7 @@ h2 {
   }
 
   .date-card {
+    min-height: 553px;
     padding: var(--padding-vertical) var(--padding-horizontal);
     gap: var(--gap-content);
     border-radius: 60px;
@@ -1829,6 +1933,16 @@ h2 {
 
   .story-gallery__right {
     margin-top: clamp(60px, calc(60px + (100vw - 390px) * 0.107579), 104px);
+  }
+}
+
+@media (max-width: 799.98px) {
+  .date-section {
+    padding-bottom: 20px;
+  }
+
+  .rsvp-deadline p {
+    white-space: normal;
   }
 }
 
