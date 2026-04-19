@@ -838,12 +838,12 @@
 
       const requestHeroFrame = () => {
         if (window.innerWidth < 1200) {
-          if (animationFrame === null) {
-            animationFrame = requestAnimationFrame(() => {
-              animationFrame = null;
-              renderHeroState();
-            });
+          if (animationFrame !== null) {
+            cancelAnimationFrame(animationFrame);
+            animationFrame = null;
           }
+
+          renderHeroState();
           return;
         }
 

@@ -257,6 +257,7 @@ h2 {
 
 .site__blur-top-mob {
   display: none;
+  max-width: none;
 }
 
 .hero__nav {
@@ -1571,7 +1572,6 @@ h2 {
       left: 50%;
       top: calc((var(--viewport-height) - 600px) / 2);
       display: block;
-      max-width: none;
       pointer-events: none;
       transform: translateX(-50%);
     }
