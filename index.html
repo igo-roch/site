@@ -714,7 +714,7 @@
         maxHeroPaddingBottom = 40;
         dateHeight = isMobileWidth ? 28 : 45;
         shrinkDistance = Math.max(viewportHeight - minHeroHeight, 0);
-        root.style.setProperty("--hero-flow-offset", `${isMobileWidth ? (viewportHeight + 600) / 2 : viewportHeight}px`);
+        root.style.setProperty("--hero-flow-offset", `${viewportHeight}px`);
         mobileHeroFrames = [];
 
         if (isMobileWidth) {
@@ -741,7 +741,20 @@
 
         if (isMobileWidth) {
           const scrollY = window.scrollY;
-          const frame = getMobileHeroFrame(scrollY);
+          const minMobileHeroHeight = 120;
+          const mobileShrinkDistance = Math.max(viewportHeight - minMobileHeroHeight, 1);
+          const shrinkProgress = Math.min(Math.max(scrollY / mobileShrinkDistance, 0), 1);
+          const heroHeight = Math.round(Math.max(viewportHeight - Math.min(scrollY, mobileShrinkDistance), minMobileHeroHeight));
+          const heroExitY = Math.round(-Math.max(scrollY - mobileShrinkDistance, 0));
+          const heroTransform = `translateY(${heroExitY}px)`;
+          const heroVideoVisible = heroHeight + heroExitY > 0;
+          const titleScale = Number((1 - 0.28 * shrinkProgress).toFixed(4));
+          const exitProgress = Math.min(Math.max((scrollY - mobileShrinkDistance) / minMobileHeroHeight, 0), 1);
+          const titleTranslateY = Math.round(-minMobileHeroHeight * exitProgress);
+          const titleFullTransform = `translateY(${titleTranslateY}px) scale(${titleScale})`;
+          const titleFullOpacity = Number((1 - exitProgress).toFixed(3));
+          const dateOpacity = Number((1 - shrinkProgress).toFixed(3));
+          const dateVisibility = dateOpacity <= 0 ? "hidden" : "visible";
 
           if (!mobileHeroStylesReset) {
             hero.removeAttribute("style");
@@ -768,35 +781,33 @@
               siteHeader.removeAttribute("style");
             }
 
-            if (heroTitleFull) {
-              heroTitleFull.style.opacity = "1";
-            }
-
-            if (heroDate) {
-              heroDate.style.opacity = "";
-              heroDate.style.visibility = "";
-            }
-
             mobileHeroStylesReset = true;
           }
 
-          if (frame.heroHeight !== lastMobileHeroHeight) {
-            hero.style.height = `${frame.heroHeight}px`;
-            lastMobileHeroHeight = frame.heroHeight;
+          hero.style.setProperty("--mobile-hero-height", `${heroHeight}px`);
+          hero.style.height = `${heroHeight}px`;
+          hero.style.maxHeight = `${heroHeight}px`;
+          lastMobileHeroHeight = heroHeight;
+
+          hero.style.transform = heroTransform;
+          lastMobileHeroTransform = heroTransform;
+
+          if (heroTitleFull && titleFullTransform !== lastMobileTitleFullTransform) {
+            heroTitleFull.style.transform = titleFullTransform;
+            lastMobileTitleFullTransform = titleFullTransform;
           }
 
-          if (frame.heroTransform !== lastMobileHeroTransform) {
-            hero.style.transform = frame.heroTransform;
-            lastMobileHeroTransform = frame.heroTransform;
+          if (heroTitleFull) {
+            heroTitleFull.style.opacity = String(titleFullOpacity);
           }
 
-          if (heroTitleFull && frame.titleFullTransform !== lastMobileTitleFullTransform) {
-            heroTitleFull.style.transform = frame.titleFullTransform;
-            lastMobileTitleFullTransform = frame.titleFullTransform;
+          if (heroDate) {
+            heroDate.style.opacity = String(dateOpacity);
+            heroDate.style.visibility = dateVisibility;
           }
 
-          updateHeroVideoState(frame.heroVideoVisible);
-          updateMobileHeader(frame.shrinkProgress);
+          updateHeroVideoState(heroVideoVisible);
+          updateMobileHeader(shrinkProgress);
           requestSecondaryScrollFrame(scrollY);
 
           lastRenderedScrollY = window.scrollY;
@@ -810,6 +821,8 @@
         lastMobileTitleFullTransform = null;
         lastMobileHeroVideoVisible = null;
         lastMobileSecondaryScrollY = null;
+        hero.style.removeProperty("--mobile-hero-height");
+        hero.style.maxHeight = "";
         const effectiveMinHeroHeight = window.innerWidth < 800 ? 120 : minHeroHeight;
         const effectiveShrinkDistance = Math.max(viewportHeight - effectiveMinHeroHeight, 0);
         const heroHeight = Math.max(viewportHeight - Math.min(scrollY, effectiveShrinkDistance), effectiveMinHeroHeight);
