@@ -71,7 +71,6 @@
   --hero-title-mask: url("./assets/figma/hero-title-mask.svg");
   --viewport-height: 100vh;
   --hero-flow-offset: 100vh;
-  --hero-clip-bottom: 0px;
   --padding-horizontal: 100px;
   --padding-vertical: 120px;
   --Main-title-font-size: 100px;
@@ -161,9 +160,8 @@ h2 {
   align-items: center;
   justify-content: space-between;
   overflow: hidden;
-  clip-path: inset(0 0 var(--hero-clip-bottom, 0px) 0);
   transform: translateZ(0);
-  will-change: transform, clip-path, padding, opacity;
+  will-change: height, transform, padding, opacity;
 }
 
 .hero-flow-spacer {
@@ -217,16 +215,16 @@ h2 {
   white-space: nowrap;
 }
 
-.hero__blur-bottom {
+.story__blur-bottom {
   position: absolute;
   z-index: 1;
   left: 50%;
-  bottom: 0;
+  top: -589px;
   width: 4375px;
   height: auto;
   max-width: none;
   pointer-events: none;
-  transform: translateX(-50%) translateY(var(--hero-blur-bottom-lock-y, 0px));
+  transform: translateX(-50%);
 }
 
 .hero__blur {
@@ -468,6 +466,7 @@ h2 {
 }
 
 .story {
+  position: relative;
   margin-top: var(--hero-flow-offset);
   height: 1446px;
   background: #efede7;
@@ -1299,7 +1298,7 @@ h2 {
   .hero__nav,
   .hero__date,
   .site__blur-top-mob,
-  .hero__blur-bottom,
+  .story__blur-bottom,
   .hero__blur,
   .site__video {
     transition: none;
@@ -1313,6 +1312,7 @@ h2 {
 
   .hero {
     position: fixed;
+    z-index: 5;
     inset: 0 0 auto;
     height: var(--viewport-height);
     max-height: var(--viewport-height);
@@ -1339,9 +1339,9 @@ h2 {
     transform: translate(-50%, -50%);
   }
 
-  .hero__blur-bottom {
+  .story__blur-bottom {
     display: block;
-    bottom: calc((var(--viewport-height) - 600px) / 2);
+    top: -589px;
     width: 4375px;
   }
 
@@ -1361,8 +1361,10 @@ h2 {
   }
 
   .story {
+    z-index: 3;
     margin-top: 0;
     height: auto;
+    padding-top: 182px;
   }
 
   .schedule,

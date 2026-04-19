@@ -21,7 +21,6 @@
       <img class="site__blur-top-mob" src="./assets/blur%20top%20mob.png" alt="" aria-hidden="true" />
 
       <section class="hero" id="home" aria-label="Главный экран">
-        <img class="hero__blur-bottom" src="./assets/blur%20bottom.png" alt="" aria-hidden="true" />
         <div class="hero__blur" aria-hidden="true">
           <div class="hero__blur-bg"></div>
         </div>
@@ -78,6 +77,7 @@
       <div class="hero-flow-spacer" aria-hidden="true"></div>
 
       <section class="story section-panel" id="story">
+        <img class="story__blur-bottom" src="./assets/blur%20bottom.png" alt="" aria-hidden="true" />
         <div class="section-copy">
           <h1 class="texture-title">История любви</h1>
           <div class="section-text">
@@ -274,7 +274,6 @@
       const heroTitle = document.querySelector(".hero__title");
       const heroTitleFull = document.querySelector(".hero__title-full");
       const heroTitleShort = document.querySelector(".hero__title-short");
-      const heroBlurBottom = document.querySelector(".hero__blur-bottom");
       const heroTopCompensation = document.querySelector(".hero__top-compensation");
       const mobileHeader = document.querySelector(".mobile-header");
       const mobileMenuTrigger = document.querySelector(".mobile-menu-trigger");
@@ -336,15 +335,11 @@
       let lastMobileHeaderPaddingTop = null;
       let mobileHeroStylesReset = false;
       let lastMobileHeroHeight = null;
-      let lastMobileHeroClipBottom = null;
-      let lastMobileHeroPaddingY = null;
       let lastMobileHeroTransform = null;
-      let lastMobileBlurLockY = null;
       let lastMobileTitleFullOpacity = null;
       let lastMobileTitleFullTransform = null;
       let lastMobileDateOpacity = null;
       let lastMobileDateVisibility = null;
-      let lastMobileDateTransform = null;
       let lastMobileHeroVideoVisible = null;
       let lastMobileSecondaryScrollY = null;
       let datePanStartY = 0;
@@ -683,7 +678,7 @@
         maxHeroPaddingBottom = 40;
         dateHeight = isMobileWidth ? 28 : 45;
         shrinkDistance = Math.max(viewportHeight - minHeroHeight, 0);
-        root.style.setProperty("--hero-flow-offset", `${viewportHeight}px`);
+        root.style.setProperty("--hero-flow-offset", `${isMobileWidth ? (viewportHeight + 600) / 2 : viewportHeight}px`);
 
         if (dateSection) {
           datePanStartY = Math.max(dateSection.offsetTop - viewportHeight, 0);
@@ -712,23 +707,17 @@
           const heroExitY = Math.round(-Math.max(scrollY - mobileShrinkDistance, 0));
           const exitProgress = Math.min(Math.max((scrollY - mobileShrinkDistance) / minMobileHeroHeight, 0), 1);
           const titleScale = Number((1 - 0.28 * shrinkProgress).toFixed(4));
-          const titleLayoutTranslateY = Math.round((heroHeight - viewportHeight) / 2);
-          const titleExitTranslateY = Math.round(-minMobileHeroHeight * exitProgress);
-          const titleTranslateY = titleLayoutTranslateY + titleExitTranslateY;
-          const dateTranslateY = Math.round(viewportHeight - heroHeight);
+          const titleTranslateY = Math.round(-minMobileHeroHeight * exitProgress);
           const titleFullOpacity = Number((1 - exitProgress).toFixed(3));
           const dateOpacity = Number((1 - shrinkProgress).toFixed(3));
-          const videoHeight = 600;
-          const blurLockDistance = Math.max((viewportHeight - videoHeight) / 2, 0);
-          const blurLockY = Math.round(Math.min(scrollY, blurLockDistance));
-          const heroClipBottom = Math.round(Math.max(viewportHeight - heroHeight, 0));
-          const blurOffsetY = blurLockY - heroClipBottom;
-          const heroPaddingY = Math.round(40 * (1 - shrinkProgress));
           const heroTransform = `translateY(${heroExitY}px)`;
           const titleFullTransform = `translateY(${titleTranslateY}px) scale(${titleScale})`;
           const dateVisibility = dateOpacity <= 0 ? "hidden" : "visible";
 
           if (!mobileHeroStylesReset) {
+            hero.style.paddingTop = "";
+            hero.style.paddingBottom = "";
+
             if (heroTitleShort) {
               heroTitleShort.removeAttribute("style");
             }
@@ -752,30 +741,14 @@
             mobileHeroStylesReset = true;
           }
 
-          if (heroClipBottom !== lastMobileHeroClipBottom) {
-            hero.style.setProperty("--hero-clip-bottom", `${heroClipBottom}px`);
-            lastMobileHeroClipBottom = heroClipBottom;
-          }
-
-          if (lastMobileHeroHeight !== viewportHeight) {
-            hero.style.height = `${viewportHeight}px`;
-            lastMobileHeroHeight = viewportHeight;
-          }
-
-          if (heroPaddingY !== lastMobileHeroPaddingY) {
-            hero.style.paddingTop = `${heroPaddingY}px`;
-            hero.style.paddingBottom = `${heroPaddingY}px`;
-            lastMobileHeroPaddingY = heroPaddingY;
+          if (heroHeight !== lastMobileHeroHeight) {
+            hero.style.height = `${heroHeight}px`;
+            lastMobileHeroHeight = heroHeight;
           }
 
           if (heroTransform !== lastMobileHeroTransform) {
             hero.style.transform = heroTransform;
             lastMobileHeroTransform = heroTransform;
-          }
-
-          if (blurOffsetY !== lastMobileBlurLockY) {
-            heroBlurBottom?.style.setProperty("--hero-blur-bottom-lock-y", `${blurOffsetY}px`);
-            lastMobileBlurLockY = blurOffsetY;
           }
 
           if (heroTitleFull) {
@@ -791,11 +764,6 @@
           }
 
           if (heroDate) {
-            if (dateTranslateY !== lastMobileDateTransform) {
-              heroDate.style.transform = `translateY(${-dateTranslateY}px)`;
-              lastMobileDateTransform = dateTranslateY;
-            }
-
             if (dateOpacity !== lastMobileDateOpacity) {
               heroDate.style.opacity = String(dateOpacity);
               lastMobileDateOpacity = dateOpacity;
@@ -823,19 +791,13 @@
         const scrollY = window.scrollY;
         mobileHeroStylesReset = false;
         lastMobileHeroHeight = null;
-        lastMobileHeroClipBottom = null;
-        lastMobileHeroPaddingY = null;
         lastMobileHeroTransform = null;
-        lastMobileBlurLockY = null;
         lastMobileTitleFullOpacity = null;
         lastMobileTitleFullTransform = null;
         lastMobileDateOpacity = null;
         lastMobileDateVisibility = null;
-        lastMobileDateTransform = null;
         lastMobileHeroVideoVisible = null;
         lastMobileSecondaryScrollY = null;
-        hero.style.removeProperty("--hero-clip-bottom");
-        heroBlurBottom?.style.removeProperty("--hero-blur-bottom-lock-y");
         const effectiveMinHeroHeight = window.innerWidth < 800 ? 120 : minHeroHeight;
         const effectiveShrinkDistance = Math.max(viewportHeight - effectiveMinHeroHeight, 0);
         const heroHeight = Math.max(viewportHeight - Math.min(scrollY, effectiveShrinkDistance), effectiveMinHeroHeight);
