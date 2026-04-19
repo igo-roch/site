@@ -18,13 +18,7 @@
         aria-hidden="true"
       ></video>
 
-      <div class="site__blur-top" aria-hidden="true">
-        <div class="site__blur-top-bg"></div>
-      </div>
-
-      <div class="site__blur-bottom" aria-hidden="true">
-        <div class="site__blur-bottom-bg"></div>
-      </div>
+      <img class="site__blur-top-mob" src="./assets/blur%20top%20mob.png" alt="" aria-hidden="true" />
 
       <section class="hero" id="home" aria-label="Главный экран">
         <img class="hero__blur-bottom" src="./assets/blur%20bottom.png" alt="" aria-hidden="true" />
@@ -80,6 +74,8 @@
           <a href="#dress-code">Дресс-код</a>
         </div>
       </header>
+
+      <div class="hero-flow-spacer" aria-hidden="true"></div>
 
       <section class="story section-panel" id="story">
         <div class="section-copy">
@@ -273,13 +269,12 @@
 
     <script>
       const hero = document.querySelector(".hero");
-      const siteBlurTop = document.querySelector(".site__blur-top");
-      const siteBlurBottom = document.querySelector(".site__blur-bottom");
       const heroBlur = document.querySelector(".hero__blur");
       const heroNav = document.querySelector(".hero__nav");
       const heroTitle = document.querySelector(".hero__title");
       const heroTitleFull = document.querySelector(".hero__title-full");
       const heroTitleShort = document.querySelector(".hero__title-short");
+      const heroBlurBottom = document.querySelector(".hero__blur-bottom");
       const heroTopCompensation = document.querySelector(".hero__top-compensation");
       const mobileHeader = document.querySelector(".mobile-header");
       const mobileMenuTrigger = document.querySelector(".mobile-menu-trigger");
@@ -336,7 +331,6 @@
       let isHeroVideoPlaying = true;
       let lastHeroVideoVisible = null;
       let lastHeroVideoOpacity = null;
-      let lastBlurBottomLockY = null;
       let lastMobileHeaderPaddingTop = null;
       let datePanStartY = 0;
       let datePanEndY = 0;
@@ -512,27 +506,6 @@
         }
       };
 
-      const updateMobileBlurBottom = (scrollY) => {
-        if (!siteBlurBottom) {
-          return;
-        }
-
-        if (window.innerWidth >= 1200) {
-          siteBlurBottom.style.removeProperty("--site-blur-bottom-lock-y");
-          lastBlurBottomLockY = null;
-          return;
-        }
-
-        const videoHeight = 600;
-        const storyReachDistance = Math.max((viewportHeight - videoHeight) / 2, 0);
-        const lockY = Math.min(scrollY, storyReachDistance);
-
-        if (lockY !== lastBlurBottomLockY) {
-          siteBlurBottom.style.setProperty("--site-blur-bottom-lock-y", `${lockY}px`);
-          lastBlurBottomLockY = lockY;
-        }
-      };
-
       const updateMobileHeader = (progress) => {
         if (!mobileHeader) {
           return;
@@ -692,11 +665,15 @@
           const titleScale = 1 - 0.28 * shrinkProgress;
           const titleTranslateY = -minMobileHeroHeight * exitProgress;
           const dateOpacity = 1 - shrinkProgress;
+          const videoHeight = 600;
+          const blurLockDistance = Math.max((viewportHeight - videoHeight) / 2, 0);
+          const blurLockY = Math.min(scrollY, blurLockDistance);
 
           hero.style.height = `${heroHeight}px`;
           hero.style.paddingTop = `${40 * (1 - shrinkProgress)}px`;
           hero.style.paddingBottom = `${40 * (1 - shrinkProgress)}px`;
           hero.style.transform = `translateY(${heroExitY}px)`;
+          heroBlurBottom?.style.setProperty("--hero-blur-bottom-lock-y", `${blurLockY}px`);
 
           if (heroTitleFull) {
             heroTitleFull.style.opacity = String(1 - exitProgress);
@@ -709,10 +686,6 @@
 
           if (heroNav) {
             heroNav.removeAttribute("style");
-          }
-
-          if (siteBlurTop) {
-            siteBlurTop.removeAttribute("style");
           }
 
           if (heroTopCompensation) {
@@ -729,7 +702,6 @@
           }
 
           updateHeroVideoState(heroHeight + heroExitY > 0);
-          updateMobileBlurBottom(scrollY);
           updateMobileHeader(shrinkProgress);
 
           if (siteHeader) {
@@ -751,6 +723,7 @@
         }
 
         const scrollY = window.scrollY;
+        heroBlurBottom?.style.removeProperty("--hero-blur-bottom-lock-y");
         const effectiveMinHeroHeight = window.innerWidth < 800 ? 120 : minHeroHeight;
         const effectiveShrinkDistance = Math.max(viewportHeight - effectiveMinHeroHeight, 0);
         const heroHeight = Math.max(viewportHeight - Math.min(scrollY, effectiveShrinkDistance), effectiveMinHeroHeight);

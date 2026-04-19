@@ -164,6 +164,10 @@ h2 {
   will-change: height, padding, opacity;
 }
 
+.hero-flow-spacer {
+  display: none;
+}
+
 .hero__title {
   position: relative;
   z-index: 2;
@@ -220,15 +224,7 @@ h2 {
   height: auto;
   max-width: none;
   pointer-events: none;
-  transform: translateX(-50%);
-}
-
-.site__blur-bottom {
-  display: none;
-}
-
-.site__blur-bottom-bg {
-  display: none;
+  transform: translateX(-50%) translateY(var(--hero-blur-bottom-lock-y, 0px));
 }
 
 .hero__blur {
@@ -259,15 +255,8 @@ h2 {
   will-change: transform;
 }
 
-.site__blur-top {
+.site__blur-top-mob {
   display: none;
-}
-
-.site__blur-top-bg {
-  position: absolute;
-  left: 50%;
-  background: var(--page-bg);
-  transform: translateX(-50%);
 }
 
 .hero__nav {
@@ -1305,8 +1294,7 @@ h2 {
   .hero__title-short,
   .hero__nav,
   .hero__date,
-  .site__blur-top,
-  .site__blur-bottom,
+  .site__blur-top-mob,
   .hero__blur-bottom,
   .hero__blur,
   .site__video {
@@ -1330,6 +1318,11 @@ h2 {
     overflow: hidden;
   }
 
+  .hero-flow-spacer {
+    display: block;
+    height: var(--hero-flow-offset);
+  }
+
   .site__video {
     position: fixed;
     z-index: 0;
@@ -1342,60 +1335,10 @@ h2 {
     transform: translate(-50%, -50%);
   }
 
-  .site__blur-top {
-    position: fixed;
-    z-index: 1;
-    display: block;
-    left: 0;
-    right: 0;
-    top: 0;
-    height: 183px;
-    pointer-events: none;
-  }
-
-  .site__blur-top-bg {
-    position: absolute;
-    left: 50%;
-    top: -1175px;
-    width: 1200px;
-    height: 1358px;
-    background: var(--page-bg);
-    filter: blur(62.5px);
-    transform: translateX(-50%);
-  }
-
   .hero__blur-bottom {
-    display: none;
-  }
-
-  .site__blur-bottom {
-    position: absolute;
-    z-index: 1;
     display: block;
-    left: 0;
-    right: 0;
-    top: calc((var(--viewport-height) + 600px) / 2 - 589px);
-    width: 100%;
-    height: 589px;
-    overflow: visible;
-    pointer-events: none;
-    transform: translateY(var(--site-blur-bottom-lock-y, 0px));
-    will-change: transform;
-  }
-
-  .site__blur-bottom-bg {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    display: block;
+    bottom: calc((var(--viewport-height) - 600px) / 2);
     width: 4375px;
-    height: 589px;
-    background-image: url("./assets/blur bottom.png");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 4375px 589px;
-    filter: none;
-    transform: translateX(-50%);
   }
 
   .hero__blur {
@@ -1414,7 +1357,7 @@ h2 {
   }
 
   .story {
-    margin-top: var(--hero-flow-offset);
+    margin-top: 0;
     height: auto;
   }
 
@@ -1619,6 +1562,19 @@ h2 {
 
   .hero__date {
     max-height: calc(var(--date-font-size) * 1.4);
+  }
+
+  @media (max-width: 799.98px) {
+    .site__blur-top-mob {
+      position: fixed;
+      z-index: 1;
+      left: 50%;
+      top: calc((var(--viewport-height) - 600px) / 2);
+      display: block;
+      max-width: none;
+      pointer-events: none;
+      transform: translateX(-50%);
+    }
   }
 
   .date-section {
