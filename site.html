@@ -338,10 +338,7 @@
       let mobileHeroFrames = [];
       let lastMobileHeroHeight = null;
       let lastMobileHeroTransform = null;
-      let lastMobileTitleFullOpacity = null;
       let lastMobileTitleFullTransform = null;
-      let lastMobileDateOpacity = null;
-      let lastMobileDateVisibility = null;
       let lastMobileHeroVideoVisible = null;
       let lastMobileSecondaryScrollY = null;
       let datePanStartY = 0;
@@ -621,17 +618,12 @@
           const exitProgress = Math.min(Math.max((scrollY - mobileShrinkDistance) / minMobileHeroHeight, 0), 1);
           const titleScale = Number((1 - 0.28 * shrinkProgress).toFixed(4));
           const titleTranslateY = Math.round(-minMobileHeroHeight * exitProgress);
-          const titleFullOpacity = Number((1 - exitProgress).toFixed(3));
-          const dateOpacity = Number((1 - shrinkProgress).toFixed(3));
 
           return {
-            dateOpacity,
-            dateVisibility: dateOpacity <= 0 ? "hidden" : "visible",
             heroHeight,
             heroTransform: `translateY(${heroExitY}px)`,
             heroVideoVisible: heroHeight + heroExitY > 0,
             shrinkProgress,
-            titleFullOpacity,
             titleFullTransform: `translateY(${titleTranslateY}px) scale(${titleScale})`,
           };
         });
@@ -772,6 +764,15 @@
               siteHeader.removeAttribute("style");
             }
 
+            if (heroTitleFull) {
+              heroTitleFull.style.opacity = "";
+            }
+
+            if (heroDate) {
+              heroDate.style.opacity = "";
+              heroDate.style.visibility = "";
+            }
+
             mobileHeroStylesReset = true;
           }
 
@@ -786,26 +787,9 @@
           }
 
           if (heroTitleFull) {
-            if (frame.titleFullOpacity !== lastMobileTitleFullOpacity) {
-              heroTitleFull.style.opacity = String(frame.titleFullOpacity);
-              lastMobileTitleFullOpacity = frame.titleFullOpacity;
-            }
-
             if (frame.titleFullTransform !== lastMobileTitleFullTransform) {
               heroTitleFull.style.transform = frame.titleFullTransform;
               lastMobileTitleFullTransform = frame.titleFullTransform;
-            }
-          }
-
-          if (heroDate) {
-            if (frame.dateOpacity !== lastMobileDateOpacity) {
-              heroDate.style.opacity = String(frame.dateOpacity);
-              lastMobileDateOpacity = frame.dateOpacity;
-            }
-
-            if (frame.dateVisibility !== lastMobileDateVisibility) {
-              heroDate.style.visibility = frame.dateVisibility;
-              lastMobileDateVisibility = frame.dateVisibility;
             }
           }
 
@@ -825,10 +809,7 @@
         mobileHeroStylesReset = false;
         lastMobileHeroHeight = null;
         lastMobileHeroTransform = null;
-        lastMobileTitleFullOpacity = null;
         lastMobileTitleFullTransform = null;
-        lastMobileDateOpacity = null;
-        lastMobileDateVisibility = null;
         lastMobileHeroVideoVisible = null;
         lastMobileSecondaryScrollY = null;
         const effectiveMinHeroHeight = window.innerWidth < 800 ? 120 : minHeroHeight;

@@ -1571,6 +1571,12 @@ h2 {
     filter: none;
   }
 
+  .is-mobile-hero-scrolling .hero__title-full {
+    background-image: none;
+    color: var(--gold);
+    -webkit-text-fill-color: var(--gold);
+  }
+
   .hero__date {
     max-height: calc(var(--date-font-size) * 1.4);
   }
